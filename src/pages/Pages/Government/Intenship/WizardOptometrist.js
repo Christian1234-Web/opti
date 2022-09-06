@@ -668,6 +668,14 @@ function WizardOptometrist(props) {
                                     <div className="d-flex align-items-start gap-3 mt-4">
                                         <button
                                             type="button"
+                                            className="btn btn-danger btn-label previestab"
+                                            onClick={() => props.existPageOptometrist()}
+                                        >
+                                            <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="button"
                                             className="btn  btn-label right ms-auto nexttab nexttab"
                                             style={{ background: ' rgb(0, 58, 3)', color: '#fff', borderColor: '1px solid rgb(0,58,3)' }} onClick={() => {
                                                 if (props.user_date_of_orientation_optometrist !== '') {
