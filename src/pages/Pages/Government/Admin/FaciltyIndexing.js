@@ -445,7 +445,13 @@ const FacilityIndexing = () => {
                                     </Table>
                                 </div>
 
-                                <div className="hstack gap-2 justify-content-end d-print-none mt-4">
+                                <div className="hstack  gap-2 justify-content-between d-print-none mt-4">
+                                    <Link
+                                        to="#"
+                                        className="btn btn-danger"
+                                    >
+                                        <i className="ri-printer-line align-bottom me-1"></i> Cancel
+                                    </Link>
                                     <Link
                                         to="#"
                                         onClick={printInvoice}
@@ -453,10 +459,6 @@ const FacilityIndexing = () => {
                                     >
                                         <i className="ri-printer-line align-bottom me-1"></i> Print
                                     </Link>
-                                    {/* <Link to="#" className="btn btn-primary">
-                                        <i className="ri-download-2-line align-bottom me-1"></i>{" "}
-                                        Download
-                                    </Link> */}
                                 </div>
                             </CardBody>
                         </Card>

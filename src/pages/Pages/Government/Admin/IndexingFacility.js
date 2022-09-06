@@ -389,7 +389,14 @@ const IndexingFacility = () => {
 
                                     </Table>
                                 </div>
-                                <div className="hstack gap-2 justify-content-end d-print-none mt-4">
+                                <div className="hstack  gap-2 justify-content-between d-print-none mt-4">
+                                    <Link
+                                        to="#"
+                                        // onClick={printInvoice}
+                                        className="btn btn-danger"
+                                    >
+                                        <i className="ri-printer-line align-bottom me-1"></i> Cancel
+                                    </Link>
                                     <Link
                                         to="#"
                                         onClick={printInvoice}

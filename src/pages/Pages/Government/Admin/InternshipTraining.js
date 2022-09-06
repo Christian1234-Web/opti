@@ -354,55 +354,55 @@ const InternshipTraining = () => {
                                             </tr>
                                         </thead>
 
-                                            {type.type === 'internship' ? <>  {idDetails?.supervisors?.map((e, i) => {
-                                                return (
-                                                    <tbody key={i}>
-                                                        <tr>
-                                                            <td className="fw-medium">{i + 1}</td>
-                                                            <td className="text-start">
-                                                                <p className="text-muted mb-0">
-                                                                    {e.firstName}
-                                                                </p>
-                                                            </td>
-                                                            <td className="text-start">
-                                                                <p className="text-muted mb-0">
-                                                                    {e.surname}
-                                                                </p>
-                                                            </td>
-                                                            <td>{e.email}</td>
-                                                            <td>{e.phone}</td>
-                                                            <td>{e.boardNumber}</td>
-                                                            <td> {new Date(e.dateOfResumption).toDateString()}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                )
-                                            })}</> :
-                                                <>
-                                                    {idDetails?.supervisors?.map((e, i) => {
-                                                        return (
-                                                            <tbody key={i}>
-                                                                <tr>
-                                                                    <td className="fw-medium">{i + 1}</td>
-                                                                    <td className="text-start">
-                                                                        <p className="text-muted mb-0">
-                                                                            {e.firstName}
-                                                                        </p>
-                                                                    </td>
-                                                                    <td className="text-start">
-                                                                        <p className="text-muted mb-0">
-                                                                            {e.surname}
-                                                                        </p>
-                                                                    </td>
-                                                                    <td>{e.email}</td>
-                                                                    <td>{e.phone}</td>
-                                                                    <td>{e.boardNumber}</td>
-                                                                    <td>{new Date(e.dateOfResumption).toDateString()}</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        )
-                                                    })}
-                                                </>
-                                            }
+                                        {type.type === 'internship' ? <>  {idDetails?.supervisors?.map((e, i) => {
+                                            return (
+                                                <tbody key={i}>
+                                                    <tr>
+                                                        <td className="fw-medium">{i + 1}</td>
+                                                        <td className="text-start">
+                                                            <p className="text-muted mb-0">
+                                                                {e.firstName}
+                                                            </p>
+                                                        </td>
+                                                        <td className="text-start">
+                                                            <p className="text-muted mb-0">
+                                                                {e.surname}
+                                                            </p>
+                                                        </td>
+                                                        <td>{e.email}</td>
+                                                        <td>{e.phone}</td>
+                                                        <td>{e.boardNumber}</td>
+                                                        <td> {new Date(e.dateOfResumption).toDateString()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })}</> :
+                                            <>
+                                                {idDetails?.supervisors?.map((e, i) => {
+                                                    return (
+                                                        <tbody key={i}>
+                                                            <tr>
+                                                                <td className="fw-medium">{i + 1}</td>
+                                                                <td className="text-start">
+                                                                    <p className="text-muted mb-0">
+                                                                        {e.firstName}
+                                                                    </p>
+                                                                </td>
+                                                                <td className="text-start">
+                                                                    <p className="text-muted mb-0">
+                                                                        {e.surname}
+                                                                    </p>
+                                                                </td>
+                                                                <td>{e.email}</td>
+                                                                <td>{e.phone}</td>
+                                                                <td>{e.boardNumber}</td>
+                                                                <td>{new Date(e.dateOfResumption).toDateString()}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    )
+                                                })}
+                                            </>
+                                        }
                                     </Table>
                                 </div>
                                 <div>
@@ -421,35 +421,35 @@ const InternshipTraining = () => {
                                                 <th scope="col"> EMAIL ADDRESS</th>
                                             </tr>
                                         </thead>
-                                            {type.type === 'internship' ? <>  {idDetails?.hospitals?.map((e, i) => {
-                                                return (
-                                                    <tbody key={i}>
-                                                        <tr>
-                                                            <td className="fw-medium">{i + 1}</td>
-                                                            <td>{e.name}</td>
-                                                            <td>{e.address}</td>
-                                                            <td>{e.phone}</td>
-                                                            <td>{e.email}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                )
-                                            })}</> :
-                                                <>
-                                                    {idDetails?.hospitals?.map((e, i) => {
-                                                        return (
-                                                            <tbody key={i}>
-                                                                <tr>
-                                                                    <td className="fw-medium">{i + 1}</td>
-                                                                    <td>{e.name}</td>
-                                                                    <td>{e.address}</td>
-                                                                    <td>{e.phone}</td>
-                                                                    <td>{e.email}</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        )
-                                                    })}
-                                                </>
-                                            }
+                                        {type.type === 'internship' ? <>  {idDetails?.hospitals?.map((e, i) => {
+                                            return (
+                                                <tbody key={i}>
+                                                    <tr>
+                                                        <td className="fw-medium">{i + 1}</td>
+                                                        <td>{e.name}</td>
+                                                        <td>{e.address}</td>
+                                                        <td>{e.phone}</td>
+                                                        <td>{e.email}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })}</> :
+                                            <>
+                                                {idDetails?.hospitals?.map((e, i) => {
+                                                    return (
+                                                        <tbody key={i}>
+                                                            <tr>
+                                                                <td className="fw-medium">{i + 1}</td>
+                                                                <td>{e.name}</td>
+                                                                <td>{e.address}</td>
+                                                                <td>{e.phone}</td>
+                                                                <td>{e.email}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    )
+                                                })}
+                                            </>
+                                        }
                                     </Table>
                                 </div>
                                 <div>
@@ -470,47 +470,54 @@ const InternshipTraining = () => {
                                             </tr>
                                         </thead>
 
-                                      
-                                            {type.type === 'internship' ? <>  {idDetails?.documents?.map((e, i) => {
-                                                return (
-                                                    <tbody key={i}>
 
-                                                        <tr>
-                                                            <td className="fw-medium">{i + 1}</td>
-                                                            <td> <FileText size='28' /></td>
-                                                            <td> {e.name}</td>
-                                                            <td> <Link to="#" onClick={() => downloadFile(e.file)} className="btn btn-primary">
-                                                                <i className="ri-download-2-line align-bottom "></i>{" "}
-                                                                Download
-                                                            </Link></td>
-                                                        </tr>
+                                        {type.type === 'internship' ? <>  {idDetails?.documents?.map((e, i) => {
+                                            return (
+                                                <tbody key={i}>
 
-                                                    </tbody>
-                                                )
-                                            })}</> :
-                                                <>
-                                                    {idDetails?.documents?.map((e, i) => {
-                                                        return (
-                                                            <tbody key={i}>
+                                                    <tr>
+                                                        <td className="fw-medium">{i + 1}</td>
+                                                        <td> <FileText size='28' /></td>
+                                                        <td> {e.name}</td>
+                                                        <td> <Link to="#" onClick={() => downloadFile(e.file)} className="btn btn-primary">
+                                                            <i className="ri-download-2-line align-bottom "></i>{" "}
+                                                            Download
+                                                        </Link></td>
+                                                    </tr>
 
-                                                                <tr>
-                                                                    <td className="fw-medium">{i + 1}</td>
-                                                                    <td> <FileText size='28' /></td>
-                                                                    <td> {e.name}</td>
-                                                                    <td> <Link to="#" onClick={() => downloadFile(e.file)} className="btn btn-primary">
-                                                                        <i className="ri-download-2-line align-bottom "></i>{" "}
-                                                                        Download
-                                                                    </Link></td>
-                                                                </tr>
-                                                            </tbody>
+                                                </tbody>
+                                            )
+                                        })}</> :
+                                            <>
+                                                {idDetails?.documents?.map((e, i) => {
+                                                    return (
+                                                        <tbody key={i}>
 
-                                                        )
-                                                    })}
-                                                </>
-                                            }
+                                                            <tr>
+                                                                <td className="fw-medium">{i + 1}</td>
+                                                                <td> <FileText size='28' /></td>
+                                                                <td> {e.name}</td>
+                                                                <td> <Link to="#" onClick={() => downloadFile(e.file)} className="btn btn-primary">
+                                                                    <i className="ri-download-2-line align-bottom "></i>{" "}
+                                                                    Download
+                                                                </Link></td>
+                                                            </tr>
+                                                        </tbody>
+
+                                                    )
+                                                })}
+                                            </>
+                                        }
                                     </Table>
                                 </div>
-                                <div className="hstack gap-2 justify-content-end d-print-none mt-4">
+                                <div className="hstack  gap-2 justify-content-between d-print-none mt-4">
+                                    <Link
+                                        to="#"
+                                        // onClick={printInvoice}
+                                        className="btn btn-danger"
+                                    >
+                                        <i className="ri-printer-line align-bottom me-1"></i> Cancel
+                                    </Link>
                                     <Link
                                         to="#"
                                         onClick={printInvoice}
