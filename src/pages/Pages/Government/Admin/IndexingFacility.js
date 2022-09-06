@@ -391,7 +391,7 @@ const IndexingFacility = () => {
                                 </div>
                                 <div className="hstack  gap-2 justify-content-between d-print-none mt-4">
                                     <Link
-                                        to="#"
+                                        to="/admin-dashboard"
                                         // onClick={printInvoice}
                                         className="btn btn-danger"
                                     >

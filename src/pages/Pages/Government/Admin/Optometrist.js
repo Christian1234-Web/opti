@@ -356,7 +356,7 @@ function Optometrist() {
                                         </div>
                                     </div>
                                     <div className="card-body pt-0">
-                                        <Table className="align-middle table-nowrap mb-0">
+                                        <Table>
                                             <thead>
                                                 <tr>
                                                     <th scope="col"> ID</th>

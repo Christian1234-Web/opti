@@ -447,7 +447,7 @@ const FacilityIndexing = () => {
 
                                 <div className="hstack  gap-2 justify-content-between d-print-none mt-4">
                                     <Link
-                                        to="#"
+                                        to="/admin-dashboard"
                                         className="btn btn-danger"
                                     >
                                         <i className="ri-printer-line align-bottom me-1"></i> Cancel
