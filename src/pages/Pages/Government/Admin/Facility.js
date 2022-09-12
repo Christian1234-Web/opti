@@ -193,9 +193,9 @@ function Facility() {
                         <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                     }
                     </td>
-                    <td>{e.isApprovedBySD === false ? 'Awaiting Approval' : 'Approved'}</td>
-                    <td>{e.isApprovedByHOD === false ? 'Awaiting Approval' : 'Approved'}</td>
-                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedBySD === null ? 'Awaiting Approval' : e.isApprovedBySD === false ? 'Disapproved' : 'Approved'}</td>
+                    <td>{e.isApprovedByHOD === null ? 'Awaiting Approval' : e.isApprovedByHOD === false ? 'Disapproved' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === null ? 'Awaiting Approval' : e.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
                         <div className="hstack  flex-wrap">
                             <button href="#" type="button" className="btn btn-ghost-secondary btn-icon btn-sm fs-16"

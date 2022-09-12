@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Store } from "../../../../services/store";
 import { request } from '../../../../services/utilities';
 import { LoaderGrow } from '../../../AdvanceUi/Loader/loader';
 
-function Optician({ opticians, showEditOptician, idx, user, setOpticians, optometrists, color_one_optician, setColor_one_optician, color_two_optician, setColor_two_optician }) {
 
-    // const [color_one_optician, setColor_one_optician] = useState('text-success');
-    // const [color_two, setColor_two] = useState(' ');
-    const [count, setCount] = useState(0);
+function Optician({ opticians, showEditOptician, idx, user, setOpticians, optometrists, color_one_optician, setColor_one_optician,
+    color_two_optician, setColor_two_optician })
+{
+    let store = useContext(Store);
+    let [optician_countdown, setOptician_countdown] = store.optician_countdown;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const internTrain = user.type === ''
+    let [count, setCount] = useState(60);
+
     const fetchOptician = async () => {
         setColor_one_optician('text-success');
         setColor_two_optician('');
@@ -28,7 +31,7 @@ function Optician({ opticians, showEditOptician, idx, user, setOpticians, optome
             console.log(err);
         }
     }
-    const fetchTrainingOptometrist = async () => {
+    const fetchTrainingOpticians = async () => {
         setColor_one_optician('');
         setColor_two_optician('text-success');
         try {
@@ -44,17 +47,45 @@ function Optician({ opticians, showEditOptician, idx, user, setOpticians, optome
             console.log(err);
         }
     }
+    const counting = useCallback(() => {
+        console.log('hello')
+        const intervalId = setInterval(() => {
+            setCount(prevCount => prevCount - 1);
+        }, 1000);
+        if (optician_countdown === 'Expired') {
+            console.log('lllll')
+            clearInterval(intervalId);
+        }
+        return () => clearInterval(intervalId);
+    }, [setCount]);
+
+    useEffect(() => {
+        if (opticians?.isApprovedByAdmin === true) {
+            counting();
+        }
+    }, [counting, opticians?.isApprovedByAdmin === true]);
+    
+    if (count <= 0) {
+        setOptician_countdown("Expired");
+        clearInterval(counting);
+    } else {
+        setOptician_countdown(`0d 0h 0m ${count}s `);
+    }
+
     return (
         <>
             <div className="row">
                 <div className="col-xl-12">
                     <div className="card">
                         <div className="card-header align-items-center d-flex">
-                            <h4 className="card-title mb-0 flex-grow-1">Registered Opticians</h4>
+                            <h4 className="card-title mb-0 flex-grow-1">Registered {color_two_optician ? 'Internships' : 'Opticians'}</h4>
+                            <p>
+                                {/* {count} */}
+                            </p>
                             <div className='text-danger'>{error}</div>
                             <div className="flex-shrink-0">
                                 <div className="dropdown card-header-dropdown">
-                                    <a className={`${color_two_optician} mx-2`} style={{ cursor: 'pointer' }} onClick={() => fetchTrainingOptometrist()}>
+                                    <a className={`${color_two_optician} mx-2`} style={{ cursor: 'pointer' }} onClick={() => fetchTrainingOpticians()}>
                                         Internship registration
                                     </a>
                                     <a className={`${color_one_optician}`} style={{ cursor: 'pointer' }} onClick={() => fetchOptician()}>
@@ -89,7 +120,7 @@ function Optician({ opticians, showEditOptician, idx, user, setOpticians, optome
                                                 }
                                                 {color_two_optician ? <Link to={`/optician-dashboard/${user.type === 'optician' ? `training` : 'internship'}/${opticians.id}`}><i className="ri-eye-2-line fs-17 lh-1 align-middle"></i></Link>
                                                     : <Link to={`/optician-dashboard/oo/${user.type === 'optometrist' ? `optometrist` : 'optician'}/${opticians.id}`}><i className="ri-eye-2-line fs-17 lh-1 align-middle"></i></Link>}
-                                              
+
                                                 <i className="ri-checkbox-circle-line align-middle text-success"></i>{opticians.status}</div>
                                         </div>
                                     </div>

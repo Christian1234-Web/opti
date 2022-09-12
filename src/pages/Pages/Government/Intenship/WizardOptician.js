@@ -34,6 +34,7 @@ const MySwal = withReactContent(Swal)
 
 
 function WizardOptician(props) {
+
     const store = useContext(Store);
     let [read_only_opticianIntern, setRead_only_opticianIntern] = store.read_only_opticianIntern;
 
@@ -308,7 +309,6 @@ function WizardOptician(props) {
             setLoading(true);
             const url = `trainings/create?senderid=${user?.id}`;
             const rs = await request(url, 'POST', true, data);
-            console.log(rs);
             setError('Successful!');
             setLoading(false);
             history.push(`optician-dashboard/training/${rs?.data?.id}`);
@@ -373,6 +373,15 @@ function WizardOptician(props) {
         } catch (err) {
             setLoading(false);
             setError('Failed!');
+            if (err.message === 'you need approval to update records, kindly contact support') {
+                return MySwal.fire({
+                    title: 'Opps!',
+                    text: 'You need approval to update records, kindly contact support!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 2800
+                });
+            }
             handleError();
             console.log(err);
         }
@@ -414,6 +423,15 @@ function WizardOptician(props) {
         } catch (err) {
             setLoading(false);
             setError('Failed!');
+            if (err.message === 'you need approval to update records, kindly contact support') {
+                return MySwal.fire({
+                    title: 'Opps!',
+                    text: 'You need approval to update records, kindly contact support!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 2800
+                });
+            }
             handleError();
             console.log(err);
         }
@@ -668,11 +686,11 @@ function WizardOptician(props) {
                                     <div className="d-flex align-items-start gap-3 mt-4">
                                         <button
                                             type="button"
-                                            className="btn btn-danger btn-label previestab"
+                                            className="btn btn-primary btn-label previestab"
                                             onClick={() => props.existPageOptician()}
                                         >
                                             <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
-                                            Cancel
+                                            Go Back
                                         </button>
                                         <button
                                             type="button"
@@ -1034,9 +1052,9 @@ function WizardOptician(props) {
                                             <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
                                             Previous
                                         </button>
-                                        <div className="text-end">
+                                        {/* <div className="text-end">
                                             <button type="button" onClick={() => props.existPageOptician()} className="btn btn-danger" >Cancel</button>
-                                        </div>
+                                        </div> */}
                                         {optician_approval !== ' ' && optician_btn_update === true ?
 
                                             <div className='right  ms-auto'>

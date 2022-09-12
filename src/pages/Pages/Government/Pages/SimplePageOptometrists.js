@@ -30,6 +30,7 @@ const SimplePage = () => {
     let [read_only_optometrist, setRead_only_optometrist] = store.read_only_optometrist;
     let [optometrist_btn_save, setOptometrist_btn_save] = store.optometrist_btn_save;
     let [optometrist_btn_update, setOptometrist_btn_update] = store.optometrist_btn_update;
+    let [optometrist_countdown, setOptometrist_countdown] = store.optometrist_countdown
 
     let [academic_formOptometrist, setAcademic_formOptometrist] = store.academic_formOptometrist;
     let [post_graduateOptometrist, setPost_graduateOptometrist] = store.post_graduateOptometrist
@@ -424,11 +425,11 @@ const SimplePage = () => {
                                                                             {/* Your Subscription expires in <b>315</b> days. */}
                                                                         </div>
                                                                         <div className="flex-shrink-0">
-                                                                            <a href="#" className="text-reset text-decoration-underline" onClick={() => showInternshipOptometrist()}><b>New Internship Registration</b></a>
+                                                                            <a href={`/optometrist-dashboard#${optometristTraining === null ? `internship` : 'optometrist'}`} className="text-reset text-decoration-underline" onClick={() => showInternshipOptometrist()}><b>New {optometristTraining === null ? 'Internship' : 'Full'} Registration</b></a>
                                                                         </div>
                                                                     </div>
 
-                                                                    <div className="row align-items-end">
+                                                                    <div className="row align-items-center">
                                                                         <div className="col-sm-8">
                                                                             <div className="p-3">
                                                                                 <p className="fs-16 lh-base text-white">Welcome!<span className="fw-semibold"> {aUser.firstName}</span> {aUser.surname}</p>
@@ -436,7 +437,7 @@ const SimplePage = () => {
                                                                             </div>
                                                                         </div>
                                                                         <div className="col-sm-4">
-
+                                                                            <p className="fs-16 lh-base text-white"> {optometristTraining === null || optometristTraining?.isApprovedByAdmin === false ? '' : optometrist_countdown === 'Expired' ? 'You can now register for full registration' : <>full registration {optometrist_countdown}</>} </p>
                                                                         </div>
                                                                     </div>
                                                                 </div>

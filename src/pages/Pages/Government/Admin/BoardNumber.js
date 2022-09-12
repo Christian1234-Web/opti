@@ -2,13 +2,20 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Label, Col, Row, Input, Modal, ModalBody, Table, ModalHeader, UncontrolledTooltip } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { request } from '../../../../services/utilities';
-
+import ReactPaginate from "react-paginate";
+import Repeater from './repeater/RepeatingForm'
 
 const BoardNumber = () => {
 
     const [modal, setModal] = useState(false);
     const [number, setNumber] = useState('');
+    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [currentPage, setCurrentPage] = useState(1);
+    const [meta, setMeta] = useState(null);
+    const [count, setCount] = useState(1);
     const [board, setBoard] = useState([]);
+    const boardArr = []
+
     const toggle = () => {
         if (modal) {
             setModal(false);
@@ -17,13 +24,19 @@ const BoardNumber = () => {
         }
     };
 
+    const handlePagination = page => {
+        fetchBoardNumber(page.selected + 1)
+        setCurrentPage(page.selected + 1)
+    }
     const createBoardNumber = async () => {
-        const data = { number };
+        const data = boardArr;
+        // console.log(data)
         try {
             const url = `boards/create`;
             const rs = await request(url, 'POST', true, data);
             console.log(rs);
             setModal(false);
+            fetchBoardNumber();
 
         } catch (err) {
             console.log(err);
@@ -41,21 +54,21 @@ const BoardNumber = () => {
             }
         }
     }
-    const addInput = () => {
-        let Input = document.getElementById('input');
-        let clone = Input.find('hide').removeClass('hide');
-        Input.find('table').append('clone');
-    }
-    const fetchBoardNumber = useCallback(async () => {
+
+    const fetchBoardNumber = useCallback(async (page) => {
+        const p = page || 1;
+
         try {
-            const url = `boards/all?page=1&limit=10`;
+            const url = `boards/all?page=${p}&limit=10`;
             const rs = await request(url, 'GET', true);
             setBoard(rs.data);
-            // console.log(rs);
+            setMeta(rs.paging);
+            setCount(Math.ceil(rs.paging.total / rowsPerPage));
         } catch (err) {
             console.log(err);
         }
-    }, []);
+    }, [rowsPerPage]);
+
     useEffect(() => {
         fetchBoardNumber();
     }, fetchBoardNumber)
@@ -66,33 +79,9 @@ const BoardNumber = () => {
                     Add Board Number
                 </ModalHeader>
                 <ModalBody>
-                    <div id='input'>
-                        <div className='table'>
-                        <Col md={12}>
-                            <div className="mb-3">
-                                <Label htmlFor="firstNameinput" className="form-label">Board Number</Label>
-                                <button onClick={() => addInput()} type="button" className="btn btn-ghost-secondary btn-icon btn-sm fs-16"
-                                    id="Tooltip1"><i className="ri-delete-bin-line"></i></button>
-                                <Input type="text" className="form-control" value={number} onChange={e => setNumber(e.target.value)} placeholder="Enter your board number" id="firstNameinput" />
-                            </div>
-                        </Col>
-                        <Col md={12} className='hide'>
-                            <Input type="text" className="form-control" value={number} onChange={e => setNumber(e.target.value)} placeholder="Enter your board number" id="firstNameinput" />
-                        </Col>
-                       </div>
-                    </div>
-                    {/* <Col md={12}>
-                        <div className="mb-3">
-                            <Label htmlFor="firstNameinput" className="form-label">Select Practice</Label>
-                            <select id="ForminputState" className="form-select" data-choices data-choices-sorting="true" >
-                                <option>Choose...</option>
-                                <option>Optician</option>
-                                <option>Optometrist</option>
-
-                            </select>
-                        </div>
-                    </Col> */}
-
+                    <Col md={12} >
+                        <Repeater boardArr={boardArr} />
+                    </Col>
                 </ModalBody>
                 <div className="modal-footer">
                     <button
@@ -141,7 +130,7 @@ const BoardNumber = () => {
                 <Table>
                     <thead>
                         <tr>
-                            <th scope="col"> #</th>
+                            <th scope="col"> Id</th>
                             <th scope="col">Number</th>
                             <th scope="col">Date</th>
                             <th scope="col">Action</th>
@@ -151,7 +140,7 @@ const BoardNumber = () => {
                         {board?.map((e, i) => {
                             return (
                                 <tr key={i}>
-                                    <th scope="row"><Link to="#" className="fw-medium">{i + 1}</Link></th>
+                                    <th scope="row"><Link to="#" className="fw-medium">{e.id}</Link></th>
                                     <td>{e.number}</td>
                                     <td>{new Date(e.createdAt).toDateString()}</td>
                                     <td>
@@ -165,6 +154,36 @@ const BoardNumber = () => {
                         })}
                     </tbody>
                 </Table>
+                <div>
+                    <ReactPaginate
+                        nextLabel='Next'
+                        breakLabel='...'
+                        previousLabel='Prev'
+                        pageCount={count}
+                        activeClassName='active'
+                        breakClassName='page-item'
+                        pageClassName={'page-item'}
+                        breakLinkClassName='page-link'
+                        nextLinkClassName={'page-link'}
+                        pageLinkClassName={'page-link'}
+                        nextClassName={'page-item next'}
+                        previousLinkClassName={'page-link'}
+                        previousClassName={'page-item prev'}
+                        onPageChange={page => handlePagination(page)}
+                        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+                        containerClassName={'pagination react-paginate justify-content-end p-1'}
+                    />
+                </div>
+                <div className="align-items-center mt-2 row g-3 text-center text-sm-start">
+                    <div className="col-sm">
+                        <div className="text-muted">Available Results <span className="fw-semibold">
+                            {board.length}
+                        </span>
+                            {/* of <span className="fw-semibold">125</span> */}
+                            {/* Results */}
+                        </div>
+                    </div>
+                </div>
             </div>
 
 

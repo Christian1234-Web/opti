@@ -169,8 +169,8 @@ const InternshipTraining = () => {
                                             :
                                             <>
                                                 {type.type === 'internship' ?
-                                                    <h5 className="fs-14 mb-0">{new Date(idDetails.createdAt).toDateString()}</h5> :
-                                                    <h5 className="fs-14 mb-0">  {new Date(idDetails.createdAt).toDateString()} </h5>
+                                                    <h5 className="fs-14 mb-0">{new Date(idDetails?.createdAt).toDateString()}</h5> :
+                                                    <h5 className="fs-14 mb-0">  {new Date(idDetails?.createdAt).toDateString()} </h5>
                                                 }
                                             </>
                                         }
@@ -180,13 +180,15 @@ const InternshipTraining = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By S.D
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'internship' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'internship' ? idDetails?.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedBySD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'training' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'training' ? idDetails?.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedBySD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }
@@ -196,13 +198,15 @@ const InternshipTraining = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By H.O.D
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'internship' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'internship' ? idDetails?.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'training' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'training' ? idDetails?.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }
@@ -211,13 +215,15 @@ const InternshipTraining = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By Admin
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'internship' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'internship' ? idDetails?.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByAdmin === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'training' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'training' ? idDetails?.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByAdmin === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }

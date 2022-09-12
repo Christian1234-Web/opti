@@ -52,7 +52,6 @@ function WizardOptometrist(props) {
     const [last_name, setLast_name] = useState(props.user.surname);
     const [user_email, setUser_email] = useState(props.user.email);
     const [user_phone, setUser_phone] = useState(props.user.phone);
-    console.log(props.user)
     // const [hospital_name, setHospital_name] = useState('');
     const [error, setError] = useState(' ')
     const [files, setFiles] = useState([]);
@@ -668,11 +667,11 @@ function WizardOptometrist(props) {
                                     <div className="d-flex align-items-start gap-3 mt-4">
                                         <button
                                             type="button"
-                                            className="btn btn-danger btn-label previestab"
+                                            className="btn btn-primary btn-label previestab"
                                             onClick={() => props.existPageOptometrist()}
                                         >
                                             <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
-                                            Cancel
+                                            Go Back
                                         </button>
                                         <button
                                             type="button"
@@ -1034,10 +1033,6 @@ function WizardOptometrist(props) {
                                             <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
                                             Previous
                                         </button>
-                                        <div className="text-end">
-                                            <button type="button" onClick={() => props.existPageOptometrist()} className="btn btn-danger" >Cancel</button>
-                                        </div>
-
                                         {optometrist_approval !== ' ' && optometrist_btn_update === true ?
 
                                             <div className='right  ms-auto'>

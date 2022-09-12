@@ -20,38 +20,37 @@ const MySwal = withReactContent(Swal);
 
 const storage = new SSRStorage();
 
-
 const Settings = () => {
     const store = useContext(Store);
     const [user_type, setUser_type] = store.user_type;
 
-    const [first_name, setFirst_name] = useState('');
-    const [middle_name, setMiddle_name] = useState('');
-    const [last_name, setLast_name] = useState('');
-    const [phone_one, setPhone_one] = useState('');
-    const [phone_two, setPhone_two] = useState('');
-    const [selected_state, setSelected_state] = useState('');
+    const [first_name, setFirst_name] = useState(null);
+    const [middle_name, setMiddle_name] = useState(null);
+    const [last_name, setLast_name] = useState(null);
+    const [phone_one, setPhone_one] = useState(null);
+    const [phone_two, setPhone_two] = useState(null);
+    const [selected_state, setSelected_state] = useState(null);
 
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState(null);
     const [isImage, setIsImage] = useState(false);
 
-    const [permanent_address, setPermanent_Address] = useState('');
+    const [permanent_address, setPermanent_Address] = useState(null);
     const [date, setDate] = useState();
     const [state_of_origin, setState_of_origin] = useState([]);
     const [local_gov, setLocal_gov] = useState([]);
-    const [selected_lga, setSelected_lga] = useState('');
-    const [religion, setReligion] = useState('');
-    const [place_of_birth, setPlace_of_birth] = useState('');
-    const [city, setCity] = useState('');
-    const [nationality, setNationality] = useState('');
-    const [address, setAddress] = useState('');
-    const [gender, setGender] = useState('');  // setGender(rs.gender);
-    const [maritalStatus, setMaritalStatus] = useState('');      // setMaritalStatus(rs.maritalStatus)
-    const [maidenName, setMaidenName] = useState('');     // setMaidenName(rs.maidenName)
+    const [selected_lga, setSelected_lga] = useState(null);
+    const [religion, setReligion] = useState(null);
+    const [place_of_birth, setPlace_of_birth] = useState(null);
+    const [city, setCity] = useState(null);
+    const [nationality, setNationality] = useState(null);
+    const [address, setAddress] = useState(null);
+    const [gender, setGender] = useState(null);  // setGender(rs.gender);
+    const [maritalStatus, setMaritalStatus] = useState(null);      // setMaritalStatus(rs.maritalStatus)
+    const [maidenName, setMaidenName] = useState(null);     // setMaidenName(rs.maidenName)
     const [image, setImage] = useState(null);    // setImage(rs.passport);
-    const [previousNames, setPreviousNames] = useState('');   // setPreviousNames(rs.previousNames)
+    const [previousNames, setPreviousNames] = useState(null);   // setPreviousNames(rs.previousNames)
     const [loading, setLoading] = useState(false);
-    const [avatar, setAvatar] = useState('');
+    const [avatar, setAvatar] = useState(null);
 
     const [aUser, setAUser] = useState([]);
     const [is_criminal_record, setIs_criminal_record] = useState(null);
@@ -59,7 +58,7 @@ const Settings = () => {
     const [is_drug_issue, setIs_drug_issue] = useState(null);
     const [is_sign, setIs_sign] = useState(false);
 
-    const [if_explain, setIf_explain] = useState('');
+    const [if_explain, setIf_explain] = useState(null);
     const id = useParams();
     const history = useHistory();
     const [activeTab, setActiveTab] = useState("1");
@@ -101,11 +100,21 @@ const Settings = () => {
         })
     }
     const cancel = () => {
-        console.log(phone_one);
-        if (first_name === '' || first_name === null || last_name === '' || last_name === null || phone_one === '' || phone_one === null) {
+        console.log(first_name, middle_name)
+        if (first_name === null || gender === null || last_name === null || state_of_origin === null || phone_one === null || local_gov === null || city === null
+            || maritalStatus === null || date === null || religion === null || nationality === null || address === null || place_of_birth === null || permanent_address === null
+            || is_criminal_record === null || is_drug_issue === null || is_sentence_record === null
+        ) {
+            let msg = first_name === null ? 'First Name  is Compulsory' : last_name === null ? 'Surname is Compulsory' : phone_one === null ? 'Phone Number is Compulsory'
+                : state_of_origin === null ? 'State of Origin is Compulsory' : local_gov === null ? 'Local Government is Compulsory' : city === null ? 'City is Compulsory' :
+                    maritalStatus === null ? "Marital Status is Compulsory" : date === null ? 'Date of Birth is Compulsory' : religion === null ? 'Religion is Compulsory' :
+                        nationality === null ? "Nationality is Compulsory" : address === null ? 'Address is Compulsory' : place_of_birth === null ? 'Place of Birth is Compulsory' :
+                            permanent_address === null ? 'Permanent Address is Compulsory' : ''
+                                // is_criminal_record === null ? 'Criminal Record is Compulsory' : is_drug_issue === null ? 'Drug use is Compulsory' : is_sentence_record === null ? "Sentence Record is Compulsory" : ''
+                ;
             return MySwal.fire({
                 title: 'Opps!',
-                text: ' Please fill the form completely!',
+                text: msg,
                 icon: 'warning',
                 showConfirmButton: false,
                 timer: 2500
@@ -124,10 +133,20 @@ const Settings = () => {
             isSentenced: is_sentence_record, hasDrugIssue: is_drug_issue, drugUseDetails: if_explain
         }
         // console.log(data.passport)
-        if (first_name === '' || first_name === null || last_name === '' || last_name === null || phone_one === '' || phone_one === null) {
+        if (first_name === null || gender === null || last_name === null || state_of_origin === null || phone_one === null || local_gov === null || city === null
+            || maritalStatus === null || date === null || religion === null || nationality === null || address === null || place_of_birth === null || permanent_address === null
+            || is_criminal_record === null || is_drug_issue === null || is_sentence_record === null
+        ) {
+            let msg = first_name === null ? 'First Name  is Compulsory' : last_name === null ? 'Surname is Compulsory' : phone_one === null ? 'Phone Number is Compulsory'
+                : state_of_origin === null ? 'State of Origin is Compulsory' : local_gov === null ? 'Local Government is Compulsory' : city === null ? 'City is Compulsory' :
+                    maritalStatus === null ? "Marital Status is Compulsory" : date === null ? 'Date of Birth is Compulsory' : religion === null ? 'Religion is Compulsory' :
+                        nationality === null ? "Nationality is Compulsory" : address === null ? 'Address is Compulsory' : place_of_birth === null ? 'Place of Birth is Compulsory' :
+                            permanent_address === null ? 'Permanent Address is Compulsory' : ''
+                                // is_criminal_record === null ? 'Criminal Record is Compulsory' : is_drug_issue === null ? 'Drug use is Compulsory' : is_sentence_record === null ? "Sentence Record is Compulsory" : ''
+                ;
             return MySwal.fire({
                 title: 'Opps!',
-                text: ' Please fill the form completely!',
+                text: msg,
                 icon: 'warning',
                 showConfirmButton: false,
                 timer: 2500
@@ -222,7 +241,6 @@ const Settings = () => {
             const rs = await request(url, 'GET', true);
             const userData = rs.data;
             storage.setItem(USER_COOKIE, userData);
-            // console.log(rs.data)
             setAUser(rs.data)
             setEmail(rs.data.email)
             setFirst_name(rs.data.firstName);
@@ -326,39 +344,6 @@ const Settings = () => {
                                                 Personal Details
                                             </NavLink>
                                         </NavItem>
-                                        {/* <NavItem>
-                                            <NavLink to="#"
-                                                className={classnames({ active: activeTab === "2" })}
-                                                onClick={() => {
-                                                    tabChange("2");
-                                                }}
-                                                type="button">
-                                                <i className="far fa-user"></i>
-                                                Change Password
-                                            </NavLink>
-                                        </NavItem>
-                                        <NavItem >
-                                            <NavLink to="#"
-                                                className={classnames({ active: activeTab === "3" })}
-                                                onClick={() => {
-                                                    tabChange("3");
-                                                }}
-                                                type="button">
-                                                <i className="far fa-envelope"></i>
-                                                Experience
-                                            </NavLink>
-                                        </NavItem>
-                                        <NavItem>
-                                            <NavLink to="#"
-                                                className={classnames({ active: activeTab === "4" })}
-                                                onClick={() => {
-                                                    tabChange("4");
-                                                }}
-                                                type="button">
-                                                <i className="far fa-envelope"></i>
-                                                Privacy Policy
-                                            </NavLink>
-                                        </NavItem> */}
                                     </Nav>
                                 </CardHeader>
                                 <CardBody className="p-4">
@@ -417,6 +402,7 @@ const Settings = () => {
                                                                 placeholder="Enter your phone number"
                                                                 value={phone_one}
                                                                 onChange={(e) => setPhone_one(e.target.value)}
+                                                                maxLength={11}
                                                             />
                                                         </div>
                                                     </Col>
@@ -468,14 +454,6 @@ const Settings = () => {
                                                                 onChange={(e) => setCity(e.target.value)}
                                                                 style={{ background: '#fff' }}
                                                             />
-                                                            {/* <select className="form-select mb-3">
-                                                                <option >Select your City </option>
-                                                                <option value='karu'>Karu</option>
-                                                                <option value="Wuse">Wuse</option>
-                                                                <option value="Maitama">Maitama</option>
-                                                                <option value="Area One">Area One</option>
-                                                                <option value="Pape">Pape</option>
-                                                            </select> */}
                                                         </div>
                                                     </Col>
 
@@ -564,7 +542,7 @@ const Settings = () => {
                                                         <div className="mb-3">
                                                             <Label htmlFor="cityInput" className="form-label">Place of Birth</Label>
                                                             <Input type="text" className="form-control" id="cityInput"
-                                                                placeholder="Nationality" value={place_of_birth}
+                                                                placeholder="Place of birth" value={place_of_birth}
                                                                 onChange={e => setPlace_of_birth(e.target.value)}
                                                             />
                                                         </div>
@@ -579,98 +557,100 @@ const Settings = () => {
                                                             />
                                                         </div>
                                                     </Col>
-                                                    {user_type !== 'facility' ? <div>
-                                                        <div className="col-lg-12 col-md-6">
-                                                            <div>
-                                                                <div className="col-lg-12">
-                                                                    <fieldset className="row mb-3 mr-3">
-                                                                        <legend className="col-form-label col-sm-8 pt-0">  Do you have a previous conviction or criminal records?</legend>
-                                                                        <div className="col-sm-4">
-                                                                            <div className="form-check form-check-inline">
-                                                                                <input className="form-check-input"
-                                                                                    value={email !== null ? is_criminal_record : is_criminal_record}
-                                                                                    checked={is_criminal_record === true ? true : null}
-                                                                                    onChange={() => setIs_criminal_record(true)}
-                                                                                    type="radio" />
-                                                                                <label className="form-check-label" htmlFor="allTransactions">Yes</label>
-                                                                            </div>
-                                                                            <div className="form-check form-check-inline">
-                                                                                <input className="form-check-input"
-                                                                                    value={email !== null ? is_criminal_record : is_criminal_record}
-                                                                                    checked={is_criminal_record === false ? true : null}
-                                                                                    onChange={() => setIs_criminal_record(false)}
-                                                                                    type="radio" />
-                                                                                <label className="form-check-label" htmlFor="allTransactions">No</label>
-                                                                            </div>
+                                                    {user_type !== 'facility' && user_type !== 'indexing' ?
+                                                        <div>
+                                                            <div className="col-lg-12 col-md-6">
+                                                                <div>
+                                                                    <div className="col-lg-12">
+                                                                        <fieldset className="row mb-3 mr-3">
+                                                                            <legend className="col-form-label col-sm-8 pt-0">  Do you have a previous conviction or criminal records?</legend>
+                                                                            <div className="col-sm-4">
+                                                                                <div className="form-check form-check-inline">
+                                                                                    <input className="form-check-input"
+                                                                                        value={email !== null ? is_criminal_record : is_criminal_record}
+                                                                                        checked={is_criminal_record === true ? true : null}
+                                                                                        onChange={() => setIs_criminal_record(true)}
+                                                                                        type="radio" />
+                                                                                    <label className="form-check-label" htmlFor="allTransactions">Yes</label>
+                                                                                </div>
+                                                                                <div className="form-check form-check-inline">
+                                                                                    <input className="form-check-input"
+                                                                                        value={email !== null ? is_criminal_record : is_criminal_record}
+                                                                                        checked={is_criminal_record === false ? true : null}
+                                                                                        onChange={() => setIs_criminal_record(false)}
+                                                                                        type="radio" />
+                                                                                    <label className="form-check-label" htmlFor="allTransactions">No</label>
+                                                                                </div>
 
-                                                                        </div>
-                                                                    </fieldset>
+                                                                            </div>
+                                                                        </fieldset>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div>
+                                                                    <div className="col-lg-12">
+                                                                        <fieldset className="row mb-3 mr-3">
+                                                                            <legend className="col-form-label col-sm-8 pt-0">  Have you ever been sentenced for any crime?</legend>
+                                                                            <div className="col-sm-4">
+                                                                                <div className="form-check form-check-inline">
+                                                                                    <input className="form-check-input"
+                                                                                        value={email !== null ? is_sentence_record : is_sentence_record}
+                                                                                        checked={is_sentence_record === true ? true : null}
+                                                                                        onChange={() => setIs_sentence_record(true)}
+                                                                                        type="radio" />
+                                                                                    <label className="form-check-label" htmlFor="allTransactions">Yes</label>
+                                                                                </div>
+
+                                                                                <div className="form-check form-check-inline">
+                                                                                    <input className="form-check-input"
+                                                                                        value={email !== null ? is_sentence_record : is_sentence_record}
+                                                                                        checked={is_sentence_record === false ? true : null}
+                                                                                        onChange={() => setIs_sentence_record(false)}
+                                                                                        type="radio" />
+                                                                                    <label className="form-check-label" htmlFor="allTransactions">No</label>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </fieldset>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    <div className="col-lg-12">
+                                                                        <fieldset className="row mb-3 mr-3">
+                                                                            <legend className="col-form-label col-sm-8 pt-0">  Are you currently or have you had any issues with drug use?</legend>
+                                                                            <div className="col-sm-4">
+                                                                                <div className="form-check form-check-inline">
+                                                                                    <input className="form-check-input"
+                                                                                        value={email !== null ? is_drug_issue : is_drug_issue}
+                                                                                        checked={is_drug_issue === true ? true : null}
+                                                                                        // value={is_drug_issue}
+                                                                                        onChange={() => setIs_drug_issue(true)}
+                                                                                        type="radio" />
+                                                                                    <label className="form-check-label" htmlFor="allTransactions">Yes</label>
+                                                                                </div>
+                                                                                <div className="form-check form-check-inline">
+                                                                                    <input className="form-check-input"
+                                                                                        value={email !== null ? is_drug_issue : is_drug_issue}
+                                                                                        checked={is_drug_issue === false ? true : null}
+                                                                                        onChange={() => setIs_drug_issue(false)}
+                                                                                        type="radio" />
+                                                                                    <label className="form-check-label" htmlFor="allTransactions">No</label>
+                                                                                </div>
+
+                                                                            </div>
+                                                                        </fieldset>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-
-                                                            <div>
-                                                                <div className="col-lg-12">
-                                                                    <fieldset className="row mb-3 mr-3">
-                                                                        <legend className="col-form-label col-sm-8 pt-0">  Have you ever been sentenced for any crime?</legend>
-                                                                        <div className="col-sm-4">
-                                                                            <div className="form-check form-check-inline">
-                                                                                <input className="form-check-input"
-                                                                                    value={email !== null ? is_sentence_record : is_sentence_record}
-                                                                                    checked={is_sentence_record === true ? true : null}
-                                                                                    onChange={() => setIs_sentence_record(true)}
-                                                                                    type="radio" />
-                                                                                <label className="form-check-label" htmlFor="allTransactions">Yes</label>
-                                                                            </div>
-
-                                                                            <div className="form-check form-check-inline">
-                                                                                <input className="form-check-input"
-                                                                                    value={email !== null ? is_sentence_record : is_sentence_record}
-                                                                                    checked={is_sentence_record === false ? true : null}
-                                                                                    onChange={() => setIs_sentence_record(false)}
-                                                                                    type="radio" />
-                                                                                <label className="form-check-label" htmlFor="allTransactions">No</label>
-                                                                            </div>
-
-                                                                        </div>
-                                                                    </fieldset>
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                <div className="col-lg-12">
-                                                                    <fieldset className="row mb-3 mr-3">
-                                                                        <legend className="col-form-label col-sm-8 pt-0">  Are you currently or have you had any issues with drug use?</legend>
-                                                                        <div className="col-sm-4">
-                                                                            <div className="form-check form-check-inline">
-                                                                                <input className="form-check-input"
-                                                                                    value={email !== null ? is_drug_issue : is_drug_issue}
-                                                                                    checked={is_drug_issue === true ? true : null}
-                                                                                    // value={is_drug_issue}
-                                                                                    onChange={() => setIs_drug_issue(true)}
-                                                                                    type="radio" />
-                                                                                <label className="form-check-label" htmlFor="allTransactions">Yes</label>
-                                                                            </div>
-                                                                            <div className="form-check form-check-inline">
-                                                                                <input className="form-check-input"
-                                                                                    value={email !== null ? is_drug_issue : is_drug_issue}
-                                                                                    checked={is_drug_issue === false ? true : null}
-                                                                                    onChange={() => setIs_drug_issue(false)}
-                                                                                    type="radio" />
-                                                                                <label className="form-check-label" htmlFor="allTransactions">No</label>
-                                                                            </div>
-
-                                                                        </div>
-                                                                    </fieldset>
+                                                            <div className="col-xxl-12 col-md-12 mb-4">
+                                                                <div>
+                                                                    <label htmlFor="placeholderInput" className="form-label">If yes, explain and state current position </label>
+                                                                    <input type="text" value={if_explain} onChange={(e) => setIf_explain(e.target.value)}
+                                                                        className="form-control" id="placeholderInput" placeholder="Explain" />
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div className="col-xxl-12 col-md-12 mb-4">
-                                                            <div>
-                                                                <label htmlFor="placeholderInput" className="form-label">If yes, explain and state current position </label>
-                                                                <input type="text" value={if_explain} onChange={(e) => setIf_explain(e.target.value)}
-                                                                    className="form-control" id="placeholderInput" placeholder="Explain" />
-                                                            </div>
-                                                        </div>
-                                                    </div> : ''}
+                                                        : ''}
 
                                                     <Col lg={12}>
                                                         <div className="hstack gap-2 justify-content-end">
@@ -686,400 +666,6 @@ const Settings = () => {
                                                 </Row>
                                             </Form>
                                         </TabPane>
-
-                                        {/* <TabPane tabId="2">
-                                            <Form>
-                                                <Row className="g-2">
-                                                    <Col lg={4}>
-                                                        <div>
-                                                            <Label htmlFor="oldpasswordInput" className="form-label">Old
-                                                                Password*</Label>
-                                                            <Input type="password" className="form-control"
-                                                                id="oldpasswordInput"
-                                                                placeholder="Enter current password" />
-                                                        </div>
-                                                    </Col>
-
-                                                    <Col lg={4}>
-                                                        <div>
-                                                            <Label htmlFor="newpasswordInput" className="form-label">New
-                                                                Password*</Label>
-                                                            <Input type="password" className="form-control"
-                                                                id="newpasswordInput" placeholder="Enter new password" />
-                                                        </div>
-                                                    </Col>
-
-                                                    <Col lg={4}>
-                                                        <div>
-                                                            <Label htmlFor="confirmpasswordInput" className="form-label">Confirm
-                                                                Password*</Label>
-                                                            <Input type="password" className="form-control"
-                                                                id="confirmpasswordInput"
-                                                                placeholder="Confirm password" />
-                                                        </div>
-                                                    </Col>
-
-                                                    <Col lg={12}>
-                                                        <div className="mb-3">
-                                                            <Link to="#"
-                                                                className="link-primary text-decoration-underline">Forgot
-                                                                Password ?</Link>
-                                                        </div>
-                                                    </Col>
-
-                                                    <Col lg={12}>
-                                                        <div className="text-end">
-                                                            <button type="button" className="btn btn-success">Change
-                                                                Password</button>
-                                                        </div>
-                                                    </Col>
-
-                                                </Row>
-
-                                            </Form>
-                                            <div className="mt-4 mb-3 border-bottom pb-2">
-                                                <div className="float-end">
-                                                    <Link to="#" className="link-primary">All Logout</Link>
-                                                </div>
-                                                <h5 className="card-title">Login History</h5>
-                                            </div>
-                                            <div className="d-flex align-items-center mb-3">
-                                                <div className="flex-shrink-0 avatar-sm">
-                                                    <div className="avatar-title bg-light text-primary rounded-3 fs-18">
-                                                        <i className="ri-smartphone-line"></i>
-                                                    </div>
-                                                </div>
-                                                <div className="flex-grow-1 ms-3">
-                                                    <h6>iPhone 12 Pro</h6>
-                                                    <p className="text-muted mb-0">Los Angeles, United States - March 16 at
-                                                        2:47PM</p>
-                                                </div>
-                                                <div>
-                                                    <Link to="#">Logout</Link>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex align-items-center mb-3">
-                                                <div className="flex-shrink-0 avatar-sm">
-                                                    <div className="avatar-title bg-light text-primary rounded-3 fs-18">
-                                                        <i className="ri-tablet-line"></i>
-                                                    </div>
-                                                </div>
-                                                <div className="flex-grow-1 ms-3">
-                                                    <h6>Apple iPad Pro</h6>
-                                                    <p className="text-muted mb-0">Washington, United States - November 06
-                                                        at 10:43AM</p>
-                                                </div>
-                                                <div>
-                                                    <Link to="#">Logout</Link>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex align-items-center mb-3">
-                                                <div className="flex-shrink-0 avatar-sm">
-                                                    <div className="avatar-title bg-light text-primary rounded-3 fs-18">
-                                                        <i className="ri-smartphone-line"></i>
-                                                    </div>
-                                                </div>
-                                                <div className="flex-grow-1 ms-3">
-                                                    <h6>Galaxy S21 Ultra 5G</h6>
-                                                    <p className="text-muted mb-0">Conneticut, United States - June 12 at
-                                                        3:24PM</p>
-                                                </div>
-                                                <div>
-                                                    <Link to="#">Logout</Link>
-                                                </div>
-                                            </div>
-                                            <div className="d-flex align-items-center">
-                                                <div className="flex-shrink-0 avatar-sm">
-                                                    <div className="avatar-title bg-light text-primary rounded-3 fs-18">
-                                                        <i className="ri-macbook-line"></i>
-                                                    </div>
-                                                </div>
-                                                <div className="flex-grow-1 ms-3">
-                                                    <h6>Dell Inspiron 14</h6>
-                                                    <p className="text-muted mb-0">Phoenix, United States - July 26 at
-                                                        8:10AM</p>
-                                                </div>
-                                                <div>
-                                                    <Link to="#">Logout</Link>
-                                                </div>
-                                            </div>
-                                        </TabPane> */}
-
-                                        {/* <TabPane tabId="3">
-                                            <form>
-                                                <div id="newlink">
-                                                    <div id="1">
-                                                        <Row>
-                                                            <Col lg={12}>
-                                                                <div className="mb-3">
-                                                                    <Label htmlFor="jobTitle" className="form-label">Job
-                                                                        Title</Label>
-                                                                    <Input type="text" className="form-control"
-                                                                        id="jobTitle" placeholder="Job title"
-                                                                        defaultValue="Lead Designer / Developer" />
-                                                                </div>
-                                                            </Col>
-
-                                                            <Col lg={6}>
-                                                                <div className="mb-3">
-                                                                    <Label htmlFor="companyName" className="form-label">Company
-                                                                        Name</Label>
-                                                                    <Input type="text" className="form-control"
-                                                                        id="companyName" placeholder="Company name"
-                                                                        defaultValue="Themesbrand" />
-                                                                </div>
-                                                            </Col>
-
-                                                            <Col lg={6}>
-                                                                <div className="mb-3">
-                                                                    <label htmlFor="experienceYear"
-                                                                        className="form-label">Experience Years</label>
-                                                                    <Row>
-                                                                        <Col lg={5}>
-                                                                            <select className="form-control" data-choices
-                                                                                data-choices-search-false
-                                                                                name="experienceYear"
-                                                                                id="experienceYear">
-                                                                                <option defaultValue="">Select years</option>
-                                                                                <option value="Choice 1">2001</option>
-                                                                                <option value="Choice 2">2002</option>
-                                                                                <option value="Choice 3">2003</option>
-                                                                                <option value="Choice 4">2004</option>
-                                                                                <option value="Choice 5">2005</option>
-                                                                                <option value="Choice 6">2006</option>
-                                                                                <option value="Choice 7">2007</option>
-                                                                                <option value="Choice 8">2008</option>
-                                                                                <option value="Choice 9">2009</option>
-                                                                                <option value="Choice 10">2010</option>
-                                                                                <option value="Choice 11">2011</option>
-                                                                                <option value="Choice 12">2012</option>
-                                                                                <option value="Choice 13">2013</option>
-                                                                                <option value="Choice 14">2014</option>
-                                                                                <option value="Choice 15">2015</option>
-                                                                                <option value="Choice 16">2016</option>
-                                                                                <option value="Choice 17" >2017</option>
-                                                                                <option value="Choice 18">2018</option>
-                                                                                <option value="Choice 19">2019</option>
-                                                                                <option value="Choice 20">2020</option>
-                                                                                <option value="Choice 21">2021</option>
-                                                                                <option value="Choice 22">2022</option>
-                                                                            </select>
-                                                                        </Col>
-
-                                                                        <div className="col-auto align-self-center">
-                                                                            to
-                                                                        </div>
-
-                                                                        <Col lg={5}>
-                                                                            <select className="form-control" data-choices
-                                                                                data-choices-search-false
-                                                                                name="choices-single-default2">
-                                                                                <option defaultValue="">Select years</option>
-                                                                                <option value="Choice 1">2001</option>
-                                                                                <option value="Choice 2">2002</option>
-                                                                                <option value="Choice 3">2003</option>
-                                                                                <option value="Choice 4">2004</option>
-                                                                                <option value="Choice 5">2005</option>
-                                                                                <option value="Choice 6">2006</option>
-                                                                                <option value="Choice 7">2007</option>
-                                                                                <option value="Choice 8">2008</option>
-                                                                                <option value="Choice 9">2009</option>
-                                                                                <option value="Choice 10">2010</option>
-                                                                                <option value="Choice 11">2011</option>
-                                                                                <option value="Choice 12">2012</option>
-                                                                                <option value="Choice 13">2013</option>
-                                                                                <option value="Choice 14">2014</option>
-                                                                                <option value="Choice 15">2015</option>
-                                                                                <option value="Choice 16">2016</option>
-                                                                                <option value="Choice 17">2017</option>
-                                                                                <option value="Choice 18">2018</option>
-                                                                                <option value="Choice 19">2019</option>
-                                                                                <option value="Choice 20">2020</option>
-                                                                                <option value="Choice 21">2021</option>
-                                                                                <option value="Choice 22">2022</option>
-                                                                            </select>
-                                                                        </Col>
-                                                                    </Row>
-                                                                </div>
-                                                            </Col>
-
-                                                            <Col lg={12}>
-                                                                <div className="mb-3">
-                                                                    <Label htmlFor="jobDescription" className="form-label">Job
-                                                                        Description</Label>
-                                                                   
-                                                                </div>
-                                                            </Col>
-
-                                                            <div className="hstack gap-2 justify-content-end">
-                                                                <Link className="btn btn-success"
-                                                                    to="#">Delete</Link>
-                                                            </div>
-                                                        </Row>
-                                                    </div>
-                                                </div>
-                                                <div id="newForm" style={{ "display": "none" }}>
-                                                </div>
-
-                                                <Col lg={12}>
-                                                    <div className="hstack gap-2">
-                                                        <button type="submit" className="btn btn-success">Update</button>
-                                                        <Link to="#" className="btn btn-primary">Add
-                                                            New</Link>
-                                                    </div>
-                                                </Col>
-                                            </form>
-                                        </TabPane> */}
-
-                                        {/* <TabPane tabId="4">
-                                            <div className="mb-4 pb-2">
-                                                <h5 className="card-title text-decoration-underline mb-3">Security:</h5>
-                                                <div className="d-flex flex-column flex-sm-row mb-4 mb-sm-0">
-                                                    <div className="flex-grow-1">
-                                                        <h6 className="fs-14 mb-1">Two-factor Authentication</h6>
-                                                        <p className="text-muted">Two-factor authentication is an enhanced
-                                                            security meansur. Once enabled, you'll be required to give
-                                                            two types of identification when you log into Google
-                                                            Authentication and SMS are Supported.</p>
-                                                    </div>
-                                                    <div className="flex-shrink-0 ms-sm-3">
-                                                        <Link to="#"
-                                                            className="btn btn-sm btn-primary">Enable Two-facor
-                                                            Authentication</Link>
-                                                    </div>
-                                                </div>
-                                                <div className="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
-                                                    <div className="flex-grow-1">
-                                                        <h6 className="fs-14 mb-1">Secondary Verification</h6>
-                                                        <p className="text-muted">The first factor is a password and the
-                                                            second commonly includes a text with a code sent to your
-                                                            smartphone, or biometrics using your fingerprint, face, or
-                                                            retina.</p>
-                                                    </div>
-                                                    <div className="flex-shrink-0 ms-sm-3">
-                                                        <Link to="#" className="btn btn-sm btn-primary">Set
-                                                            up secondary method</Link>
-                                                    </div>
-                                                </div>
-                                                <div className="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
-                                                    <div className="flex-grow-1">
-                                                        <h6 className="fs-14 mb-1">Backup Codes</h6>
-                                                        <p className="text-muted mb-sm-0">A backup code is automatically
-                                                            generated for you when you turn on two-factor authentication
-                                                            through your iOS or Android Twitter app. You can also
-                                                            generate a backup code on twitter.com.</p>
-                                                    </div>
-                                                    <div className="flex-shrink-0 ms-sm-3">
-                                                        <Link to="#"
-                                                            className="btn btn-sm btn-primary">Generate backup codes</Link>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="mb-3">
-                                                <h5 className="card-title text-decoration-underline mb-3">Application Notifications:</h5>
-                                                <ul className="list-unstyled mb-0">
-                                                    <li className="d-flex">
-                                                        <div className="flex-grow-1">
-                                                            <label htmlFor="directMessage"
-                                                                className="form-check-label fs-14">Direct messages</label>
-                                                            <p className="text-muted">Messages from people you follow</p>
-                                                        </div>
-                                                        <div className="flex-shrink-0">
-                                                            <div className="form-check form-switch">
-                                                                <Input className="form-check-input" type="checkbox"
-                                                                    role="switch" id="directMessage" defaultChecked />
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li className="d-flex mt-2">
-                                                        <div className="flex-grow-1">
-                                                            <Label className="form-check-label fs-14"
-                                                                htmlFor="desktopNotification">
-                                                                Show desktop notifications
-                                                            </Label>
-                                                            <p className="text-muted">Choose the option you want as your
-                                                                default setting. Block a site: Next to "Not allowed to
-                                                                send notifications," click Add.</p>
-                                                        </div>
-                                                        <div className="flex-shrink-0">
-                                                            <div className="form-check form-switch">
-                                                                <Input className="form-check-input" type="checkbox"
-                                                                    role="switch" id="desktopNotification" defaultChecked />
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li className="d-flex mt-2">
-                                                        <div className="flex-grow-1">
-                                                            <Label className="form-check-label fs-14"
-                                                                htmlFor="emailNotification">
-                                                                Show email notifications
-                                                            </Label>
-                                                            <p className="text-muted"> Under Settings, choose Notifications.
-                                                                Under Select an account, choose the account to enable
-                                                                notifications for. </p>
-                                                        </div>
-                                                        <div className="flex-shrink-0">
-                                                            <div className="form-check form-switch">
-                                                                <Input className="form-check-input" type="checkbox"
-                                                                    role="switch" id="emailNotification" />
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li className="d-flex mt-2">
-                                                        <div className="flex-grow-1">
-                                                            <Label className="form-check-label fs-14"
-                                                                htmlFor="chatNotification">
-                                                                Show chat notifications
-                                                            </Label>
-                                                            <p className="text-muted">To prevent duplicate mobile
-                                                                notifications from the Gmail and Chat apps, in settings,
-                                                                turn off Chat notifications.</p>
-                                                        </div>
-                                                        <div className="flex-shrink-0">
-                                                            <div className="form-check form-switch">
-                                                                <Input className="form-check-input" type="checkbox"
-                                                                    role="switch" id="chatNotification" />
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    <li className="d-flex mt-2">
-                                                        <div className="flex-grow-1">
-                                                            <Label className="form-check-label fs-14"
-                                                                htmlFor="purchaesNotification">
-                                                                Show purchase notifications
-                                                            </Label>
-                                                            <p className="text-muted">Get real-time purchase alerts to
-                                                                protect yourself from fraudulent charges.</p>
-                                                        </div>
-                                                        <div className="flex-shrink-0">
-                                                            <div className="form-check form-switch">
-                                                                <Input className="form-check-input" type="checkbox"
-                                                                    role="switch" id="purchaesNotification" />
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div>
-                                                <h5 className="card-title text-decoration-underline mb-3">Delete This
-                                                    Account:</h5>
-                                                <p className="text-muted">Go to the Data & Privacy section of your profile
-                                                    Account. Scroll to "Your data & privacy options." Delete your
-                                                    Profile Account. Follow the instructions to delete your account :
-                                                </p>
-                                                <div>
-                                                    <Input type="password" className="form-control" id="passwordInput"
-                                                        placeholder="Enter your password" defaultValue="make@321654987"
-                                                        style={{ maxWidth: "265px" }} />
-                                                </div>
-                                                <div className="hstack gap-2 mt-3">
-                                                    <Link to="#" className="btn btn-soft-danger">Close &
-                                                        Delete This Account</Link>
-                                                    <Link to="#" className="btn btn-light">Cancel</Link>
-                                                </div>
-                                            </div>
-                                        </TabPane> */}
-
                                     </TabContent>
                                 </CardBody>
                             </Card>

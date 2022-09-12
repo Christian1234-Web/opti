@@ -15,7 +15,6 @@ const Repeater = props => {
   for (let i = 0; i < count; i++) {
     items.push(children(i))
   }
-
   return <Tag {...rest}>{items}</Tag>
 }
 

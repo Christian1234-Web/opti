@@ -103,16 +103,16 @@ function Optometrist() {
         if (optometrists.length > 0) {
             return (
                 <tr key={i}>
-                    <th scope="row"><Link to="#" className="fw-medium">{e.user.optometrist.id}</Link></th>
+                    <th scope="row"><Link to="#" className="fw-medium">{e.id}</Link></th>
                     <td>{e.user.firstName} {e.user.surname}</td>
-                    <td>{new Date(e.user.optometrist.createdAt).toDateString()}</td>
+                    <td>{new Date(e.createdAt).toDateString()}</td>
                     <td>$2,300</td>
                     <td>
-                        {e.user.optometrist.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{e.user.optometrist.status}</span></span> :
-                            <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.user.optometrist.status}</span></span>
+                        {e.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{e.status}</span></span> :
+                            <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                         }
                     </td>
-                    <td>{e.user.optometrist.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
                     <td>
                         <div className={e.user.id === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
                             <Link to={`/search-dashboard/view/${`optometrist`}/${e.user.id}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>

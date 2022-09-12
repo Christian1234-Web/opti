@@ -38,11 +38,9 @@ const CoverSignIn = ({ location }) => {
     const [open, setOpen] = useState(false);
 
 
-    const [note, setNote] = useState(active_tab === 'facility' ? 'Facility' : active_tab === 'optician' ? 'Optician' : active_tab === 'Optician' ? 'Optometrist' : '');
-   
-    const facility_ref = useRef();
-    const optician_ref = useRef();
-    const optometrist_ref = useRef();
+    const [note, setNote] = useState(active_tab === 'facility' ? 'Facility' : active_tab === 'optician' ? 'Optician' : active_tab === 'optometrist' ? 'Optometrist' : 'Facility');
+
+
     const handleError = () => {
         return MySwal.fire({
             title: 'Sorry!',
@@ -76,9 +74,6 @@ const CoverSignIn = ({ location }) => {
                 setEmail('');
                 setRegNo('');
                 setError('');
-                optician_ref.current.style.display = 'none';
-                optometrist_ref.current.style.display = 'none';
-                facility_ref.current.style.display = '';
             } else if (tab === '2') {
                 setNote('Optician');
                 setText('DOP/');
@@ -87,10 +82,6 @@ const CoverSignIn = ({ location }) => {
                 setRegNo('');
                 setError('');
 
-                optometrist_ref.current.style.display = 'none';
-                facility_ref.current.style.display = 'none';
-                optician_ref.current.style.display = '';
-
             } else if (tab === '3') {
                 setNote('Optometrist');
                 setText('ODORBN/');
@@ -98,10 +89,6 @@ const CoverSignIn = ({ location }) => {
                 setEmail('');
                 setRegNo('');
                 setError('');
-
-                facility_ref.current.style.display = 'none';
-                optician_ref.current.style.display = 'none';
-                optometrist_ref.current.style.display = '';
 
             }
         }
@@ -224,17 +211,17 @@ const CoverSignIn = ({ location }) => {
 
                                             <Nav pills className="card-header-pills">
                                                 <NavItem>
-                                                    <NavLink href={`${location.pathname}#facility`} style={{ cursor: "pointer" }} className={classnames({ active: cardHeaderTab === "1"  })} onClick={() => { cardHeaderToggle("1"); }} >
+                                                    <NavLink href={`${location.pathname}#facility`} style={{ cursor: "pointer" }} className={classnames({ active: cardHeaderTab === "1" })} onClick={() => { cardHeaderToggle("1"); }} >
                                                         Facility
                                                     </NavLink>
                                                 </NavItem>
                                                 <NavItem>
-                                                    <NavLink href={`${location.pathname}#optician`} style={{ cursor: "pointer" }} className={classnames({ active: cardHeaderTab === "2"  })} onClick={() => { cardHeaderToggle("2"); }} >
+                                                    <NavLink href={`${location.pathname}#optician`} style={{ cursor: "pointer" }} className={classnames({ active: cardHeaderTab === "2" })} onClick={() => { cardHeaderToggle("2"); }} >
                                                         Dispensing Optician
                                                     </NavLink>
                                                 </NavItem>
                                                 <NavItem>
-                                                    <NavLink href={`${location.pathname}#optometrist`} style={{ cursor: "pointer" }} className={classnames({ active: cardHeaderTab === "3"  })} onClick={() => { cardHeaderToggle("3"); }} >
+                                                    <NavLink href={`${location.pathname}#optometrist`} style={{ cursor: "pointer" }} className={classnames({ active: cardHeaderTab === "3" })} onClick={() => { cardHeaderToggle("3"); }} >
                                                         Optometrist
                                                     </NavLink>
                                                 </NavItem>
@@ -290,9 +277,7 @@ const CoverSignIn = ({ location }) => {
 
                                                         <div className="mt-4">
                                                             <div className="mt-4">
-                                                                <button onClick={() => loginAdmin('1')} ref={facility_ref} style={{ display: '' }} id='facility' className="btn btn-success w-100" type="button">Sign In for Facility</button>
-                                                                <button onClick={() => loginAdmin('2')} ref={optician_ref} style={{ display: 'none' }} id='optician' className="btn btn-success w-100" type="button">Sign In for Optician</button>
-                                                                <button onClick={() => loginAdmin('3')} ref={optometrist_ref} style={{ display: 'none' }} id='optometrist' className="btn btn-success w-100" type="button">Sign In for Optometrist</button>
+                                                                <button onClick={() => loginAdmin()} id='optometrist' className="btn btn-success w-100" type="button">Sign In for {note}</button>
 
                                                             </div>
                                                         </div>

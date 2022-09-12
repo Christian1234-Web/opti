@@ -36,6 +36,7 @@ import CoverSignInIndex from "../pages/AuthenticationInner/Login/CoverSignInInde
 import CoverSignUpIndex from "../pages/AuthenticationInner/Register/CoverSignUpIndex";
 import FacilityIndexing from "../pages/Pages/Government/Admin/FaciltyIndexing";
 import Facility from "../pages/Pages/Government/Views/FaciltyIndexing";
+import Indexing from "../pages/Pages/Government/Views/IndexingFacility";
 import Optician from "../pages/Pages/Government/Views/InternshipTraining";
 import Optometrist from "../pages/Pages/Government/Views/OpticianOptometrist";
 
@@ -52,6 +53,7 @@ const authProtectedRoutes = [
 
   { path: `/dashboard-profile/edit/:id`, component: ProfileSetting },
   { path: "/facility-dashboard/:type/:id", component: Facility },
+  { path: "/indexing-dashboard/:type/:id", component: Indexing },
   { path: "/optician-dashboard/:type/:id", component: Optician },
   { path: "/optician-dashboard/oo/:type/:id", component: Optometrist },
 

@@ -29,6 +29,8 @@ const SimplePage = () => {
     let [optometrist_approval, setOptometrist_approval] = store.optometrist_approval;
     let [optician_btn_save, setOptician_btn_save] = store.optician_btn_save;
     let [optician_btn_update, setOptician_btn_update] = store.optician_btn_update;
+    let [optician_countdown, setOptician_countdown] = store.optician_countdown;
+
 
 
     const [loading, setLoading] = useState(false);
@@ -423,11 +425,11 @@ const SimplePage = () => {
                                                                             {/* Your Subscription expires in <b>315</b> days. */}
                                                                         </div>
                                                                         <div className="flex-shrink-0">
-                                                                            <a href="#" className="text-reset text-decoration-underline" onClick={() => showInternshipOptician()}><b>New Training Registration</b></a>
+                                                                            <a href={`/optician-dashboard#${opticianTraining === null ? `internship` : 'optician'}`} className="text-reset text-decoration-underline" onClick={() => showInternshipOptician()}><b>New {opticianTraining === null ? 'Internship' : 'Full'} Registration</b></a>
                                                                         </div>
                                                                     </div>
 
-                                                                    <div className="row align-items-end">
+                                                                    <div className="row align-items-center">
                                                                         <div className="col-sm-8">
                                                                             <div className="p-3">
                                                                                 <p className="fs-16 lh-base text-white">Welcome!<span className="fw-semibold text-capitalize"> {aUser.firstName}</span> {aUser.surname}</p>
@@ -435,7 +437,7 @@ const SimplePage = () => {
                                                                             </div>
                                                                         </div>
                                                                         <div className="col-sm-4">
-
+                                                                            <p className="fs-16 lh-base text-white"> {opticianTraining === null || opticianTraining?.isApprovedByAdmin === false ? '' : optician_countdown === 'Expired' ? 'You can now register for full registration' : <>full registration {optician_countdown}</>} </p>
                                                                         </div>
                                                                     </div>
                                                                 </div>

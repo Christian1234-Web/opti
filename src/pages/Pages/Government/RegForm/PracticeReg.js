@@ -1,7 +1,7 @@
 import React, { useState, Fragment, useContext, useEffect, useCallback } from 'react'
 import { Card, CardBody, Col, Form, Nav, NavItem, NavLink, TabContent, TabPane, ListGroupItem, Button, ListGroup } from "reactstrap";
 import { request } from '../../../../services/utilities';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import RepeatingForm from './RepeatingForm';
 import RepeatingFacility from './RepeatingFacility';
 import { Store } from '../../../../services/store';
@@ -28,6 +28,7 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
     let [facility_approval, setFacility_approval] = store.facility_approval;
     const [read_only] = store.read_only;
     const [count, setCount] = useState(0);
+    const history = useHistory();
     const [activeArrowTab, setactiveArrowTab] = useState(4);
     const [passedarrowSteps, setPassedarrowSteps] = useState([1]);
     const [files, setFiles] = useState([]);
@@ -281,9 +282,10 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
             const url = `practices/create?senderid=${idx}`;
             const rs = await request(url, 'POST', true, data);
             setLoading(false);
+            history.push(`/facility-dashboard/facility/${rs?.data?.id}`);
             setFiles([]);
-            handleSuccess();
-            existPage();
+            // handleSuccess();
+            // existPage();
         }
         catch (err) {
             setLoading(false);
@@ -321,11 +323,11 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
             setLoading(true);
             const url = `practices/create?senderid=${idx}`;
             const rs = await request(url, 'POST', true, data);
-            console.log(rs);
             setLoading(false);
+            history.push(`/facility-dashboard/facility/${rs?.data?.id}`);
             setFiles([]);
-            handleSuccess();
-            existPage();
+            // handleSuccess();
+            // existPage();
         }
         catch (err) {
             setLoading(false);
@@ -342,7 +344,7 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
                 });
             }
             handleError();
-            console.log(err)
+            console.log(err);
         }
     }
     const updatePractice = async () => {
@@ -372,6 +374,15 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
         }
         catch (err) {
             setLoading(false);
+            if (err.message === 'you need approval to update records, kindly contact support') {
+                return MySwal.fire({
+                    title: 'Opps!',
+                    text: 'You need approval to update records, kindly contact support!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 2800
+                });
+            }
             handleError();
             console.log(err);
         }
@@ -403,6 +414,15 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
         }
         catch (err) {
             setLoading(false);
+            if (err.message === 'you need approval to update records, kindly contact support') {
+                return MySwal.fire({
+                    title: 'Opps!',
+                    text: 'You need approval to update records, kindly contact support!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 2800
+                });
+            }
             handleError();
             console.log(err);
         }
@@ -442,7 +462,6 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
         if (window.confirm('are you sure')) {
             try {
                 const rs = await request(url, 'DELETE', true);
-                // console.log(rs);
                 removeDirector(i);
                 alert('deleted successful');
             } catch (err) {
@@ -459,7 +478,6 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
         if (window.confirm('are you sure')) {
             try {
                 const rs = await request(url, 'DELETE', true);
-                // console.log(rs);
                 removeFacility(i);
                 alert('deleted successful');
             } catch (err) {
@@ -478,7 +496,7 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
         } catch (err) {
             console.log(err);
         }
-    }
+    };
 
     return (
         <>

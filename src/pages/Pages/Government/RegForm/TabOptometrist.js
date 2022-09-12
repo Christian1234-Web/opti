@@ -8,8 +8,9 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal);
 
 function TabOptometrist(props) {
-
-    const [customActiveTab, setcustomActiveTab] = useState("1");
+    const hash = window.location.hash.split('#');
+    const active_tab = hash[1];
+    const [customActiveTab, setcustomActiveTab] = useState(active_tab === 'internship' ? "1" : '2');
     const toggleCustom = (tab) => {
         if (customActiveTab !== tab) {
             setcustomActiveTab(tab);

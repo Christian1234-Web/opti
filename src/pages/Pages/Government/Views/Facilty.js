@@ -43,13 +43,11 @@ function Facilty({ practices, error, showEditFacility, idx }) {
                                                         <a href="#" className="text-reset fs-14 mb-0">{e.name}</a>
                                                     </div>
                                                     <div className="col-sm-auto">
-
                                                         <div className="hstack gap-3 flex-wrap">
                                                             {e.isApprovedByAdmin === true ? ' ' : <a href="#" className="link-success fs-15" ><i className="ri-edit-2-line" onClick={() => showEditFacility(i)}></i></a>
                                                             }
                                                             <Link to={`/facility-dashboard/facility/${e.id}`} href="#"><i className="ri-eye-2-line fs-17 lh-1 align-middle"></i></Link>
                                                             <i className="ri-checkbox-circle-line align-middle text-success"></i>{e.status}</div>
-
                                                     </div>
                                                 </div>
                                             </li>

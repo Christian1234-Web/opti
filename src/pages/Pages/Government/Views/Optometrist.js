@@ -1,17 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { request } from '../../../../services/utilities';
 import { LoaderGrow } from '../../../AdvanceUi/Loader/loader';
 import { Link } from 'react-router-dom';
+import { Store } from "../../../../services/store";
 
 
 function Optometrist({ optometrists, optometristTraining, showEditOptometrist, idx, user, setOptometrists, color_one_optometrist, setColor_one_optometrist,
     color_two_optometrist, setColor_two_optometrist
 }) {
-
-
-    const [count, setCount] = useState(0);
+    let store = useContext(Store);
+    let [optometrist_countdown, setOptometrist_countdown] = store.optometrist_countdown;
+    const [count, setCount] = useState(60);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    const counting = useCallback(() => {
+        console.log('wow')
+        const intervalId = setInterval(() => {
+            setCount(prevCount => prevCount - 1);
+        }, 1000);
+        if (setOptometrist_countdown === 'Expired') {
+            clearInterval(intervalId);
+        }
+        return () => clearInterval(intervalId);
+    }, [setCount]);
+
+    useEffect(() => {
+        if (optometrists?.isApprovedByAdmin === true) {
+            counting();
+        }
+    }, [counting, optometrists?.isApprovedByAdmin === true]);
+    if (count <= 0) {
+        setOptometrist_countdown("Expired");
+        clearInterval(counting);
+    } else {
+        setOptometrist_countdown(`0d 0h 0m ${count}s `);
+    }
 
     const fetchOptometrist = async () => {
         setColor_one_optometrist('');
@@ -20,13 +44,12 @@ function Optometrist({ optometrists, optometristTraining, showEditOptometrist, i
             setLoading(true);
             const url = `users/${user.id}`;
             const rs = await request(url, 'GET', true);
+            console.log(rs);
             setOptometrists(rs.data.optometrist);
             setLoading(false);
         } catch (err) {
             setLoading(false);
             alert('Poor internet connection');
-            // setError('Poor Internet Connection');
-            // handleError();
             console.log(err);
         }
     }
@@ -54,7 +77,7 @@ function Optometrist({ optometrists, optometristTraining, showEditOptometrist, i
                     <div className="card">
                         <div className="card-header align-items-center d-flex">
                             <>{loading === true ? <LoaderGrow /> : ''}</>
-                            <h4 className="card-title mb-0 flex-grow-1">Registered Optometrists</h4>
+                            <h4 className="card-title mb-0 flex-grow-1">Registered {color_one_optometrist ? 'Internships' : 'Optometrists'}</h4>
                             <div className='text-danger'>{error}</div>
                             <div className="flex-shrink-0">
                                 <div className="dropdown card-header-dropdown">
@@ -86,7 +109,7 @@ function Optometrist({ optometrists, optometristTraining, showEditOptometrist, i
                                         <div className="col-sm-auto">
 
                                             <div className="hstack gap-3 flex-wrap">
-                                                {optometrists.isApproved === true ? ' ' : <a href="#" className="link-success fs-15" ><i className="ri-edit-2-line" onClick={() => showEditOptometrist()}></i></a>
+                                                {optometrists.isApproved === true ? ' ' : <Link to={`/optometrist-dashboard/#${color_one_optometrist ? 'internship' : 'optometrist'}`} className="link-success fs-15" ><i className="ri-edit-2-line" onClick={() => showEditOptometrist()}></i></Link>
                                                 }
                                                 {color_one_optometrist ? <Link to={`/optometrist-dashboard/${user.type === 'optician' ? `training` : 'internship'}/${optometrists.id}`}><i className="ri-eye-2-line fs-17 lh-1 align-middle"></i></Link>
                                                     : <Link to={`/optometrist-dashboard/oo/${user.type === 'optometrist' ? `optometrist` : 'optician'}/${optometrists.id}`}><i className="ri-eye-2-line fs-17 lh-1 align-middle"></i></Link>}

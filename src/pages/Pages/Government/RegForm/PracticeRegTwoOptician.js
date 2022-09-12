@@ -41,7 +41,7 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
     const [read_only_optician, setRead_only_optician] = store.read_only_optician;
     let [optician_approval, setOptician_approval] = store.optician_approval;
     let [optician_btn_save, setOptician_btn_save] = store.optician_btn_save;
-
+    let [optician_countdown, setOptician_countdown] = store.optician_countdown;
     let [academic_formOptician, setAcademic_formOptician] = store.academic_formOptician;
     let [post_graduateOptician, setPost_graduateOptician] = store.post_graduateOptician;
     let [referenceOptician, setReferenceOptician] = store.referenceOptician;
@@ -114,6 +114,8 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
     const [activeArrowTab, setactiveArrowTab] = useState(4);
     const [passedarrowSteps, setPassedarrowSteps] = useState([1]);
     const [count, setCount] = useState(0);
+    let [counts, setCounts] = useState(60);
+
     const arr = [];
 
     function toggleArrowTab(tab) {
@@ -556,9 +558,9 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
             setLoading(true);
             const url = `opticians/${oneOptician.id}`;
             const rs = await request(url, 'GET', true);
-            setAcademic_formOptician(rs.data.user.optician.academic);
-            setPost_graduateOptician(rs.data.user.optician.certifications);
-            setReferenceOptician(rs.data.user.optician.referees);
+            setAcademic_formOptician(rs.data.academics);
+            setPost_graduateOptician(rs.data.certifications);
+            setReferenceOptician(rs.data.referees);
             setLoading(false);
             // console.log(rs);
         } catch (err) {
@@ -571,96 +573,79 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
     const [startDate, setStartDate] = useState(null);
 
     const dateCountDown = useCallback(() => {
-        // console.log(opticianTraining)
-        if (opticianTraining === null) {
-            return setMsg('0d  0h 0m 0s');
-        } else {
-            let timeSet = new Date(opticianTraining.createdAt).toUTCString().split(' ');
-            // console.log(opticianTraining)
-
+        if (opticianTraining === null || opticianTraining?.isApprovedByAdmin === false || opticianTraining?.isApprovedByAdmin === null) {
+            setOptician_countdown('0d  0h 0m 0s');
+            return
+        }
+        else {
+            let timeSet = new Date(opticianTraining?.updatedAt).toUTCString().split(' ');
             let xx = `${timeSet[2]} ${timeSet[1]} ${parseInt(timeSet[3]) + 1} ${timeSet[4]}`;
             setStartDate(xx)
-            // console.log(startDate);
-
-            // May 19, 2022 16:37:25
-            // Set the date we're counting down to
             let countDownDate = new Date(startDate).getTime();
-
-            // Update the count down every 1 second
             let x = setInterval(function () {
-
-                // Get today's date and time
                 let now = new Date().getTime();
-
-                // Find the distance between now and the count down date
                 let distance = countDownDate - now;
-
-                // Time calculations for days, hours, minutes and seconds
                 let days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // Display the result in the element with id="demo"
-                // document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-                //     + minutes + "m " + seconds + "s ";
-                setMsg(days + "d " + hours + "h "
+                setOptician_countdown(days + "d " + hours + "h "
                     + minutes + "m " + seconds + "s ");
-                // If the count down is finished, write some text
                 if (distance < 0) {
                     clearInterval(x);
-                    // document.getElementById("demo").innerHTML = "EXPIRED";
-                    setMsg("Expired")
+                    setOptician_countdown("Expired")
                 }
             }, 1000);
         }
-    }, [opticianTraining, startDate]);
+    }, [opticianTraining, setOptician_countdown, startDate]);
 
 
 
 
     const fetchUserDetails = useCallback(async () => {
+        setFirst_name(user.firstName);
+        console.log(user);
+        setMiddle_name(user.otherNames);
+        setLast_name(user.surname);
+        setUser_email(user.email);
+        setUser_phone(user.phone);
+        setDate_of_birth(new Date(user.dateOfBirth).toDateString());
+        setState(user.stateOfOrigin);
+        setLga(user.lgaOrigin);
+        setHome_address(user.address);
+        setPermanent_address(user.addressOrigin);
+        setAny_name(user.previousNames);
+        setSex(user.gender);
+        setMaiden_name(user.maidenName);
+        setMarital_status(user.maritalStatus);
+        setIs_criminal_record(user.isConvicted);
+        setIs_sentence_record(user.isSentenced);
+        setIs_drug_issue(user.hasDrugIssue);
+        setIf_explain(user.drugUseDetails);
         try {
             setLoading(true);
             const url = `opticians/${oneOptician?.id}`;
             const rs = await request(url, 'GET', true);
-            console.log(rs);
             setDocuments(rs.data.documents);
-            setFirst_name(user.firstName);
-            setMiddle_name(user.otherNames);
-            setLast_name(user.surname);
-            setUser_email(user.email);
-            setUser_phone(user.phone);
-            setDate_of_birth(new Date(user.dateOfBirth).toDateString());
-            setState(user.stateOfOrigin);
-            setLga(user.lgaOrigin);
-            setHome_address(user.address);
-            setPermanent_address(user.addressOrigin);
-            setAny_name(user.previousNames);
-            setSex(user.gender);
-            setMaiden_name(user.maidenName);
-            setMarital_status(user.maritalStatus);
-            setIs_criminal_record(user.isConvicted);
-            setIs_sentence_record(user.isSentenced);
-            setIs_drug_issue(user.hasDrugIssue);
-            setIf_explain(user.drugUseDetails);
             setLoading(false);
         } catch (err) {
             setLoading(false);
             console.log(err)
         }
-    }, [user, setDocuments])
+    }, [oneOptician?.id, setDocuments]);
 
     useEffect(() => {
         fetchUserDetails();
-        dateCountDown();
-    }, [fetchUserDetails, dateCountDown]);
+        // dateCountDown();
+        // countting();
+    }, [fetchUserDetails]);
     return (
         <>
             <CardBody className="form-steps">
                 <>{loading === true ? <LoaderGrow /> : ' '}</>
 
-                {msg !== "Expired" ? <Form>
+                {optician_countdown !== "Expired" ? <Form>
                     <div className="mb-4">
                         <Nav
                             className="nav nav-tabs nav-tabs-custom nav-success nav-justified mb-3"
@@ -1235,13 +1220,13 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
                             <div className="d-flex align-items-start gap-3 mt-4">
                                 <button
                                     type="button"
-                                    className="btn btn-light btn-label previestab"
+                                    className="btn btn-primary btn-label previestab"
                                     onClick={() => {
-                                        toggleArrowTab(activeArrowTab - 1);
+                                        existPageOptician();
                                     }}
                                 >
                                     <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
-                                    Previous
+                                    Go Back
                                 </button>
 
                                 <button
@@ -1311,9 +1296,6 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
                                     <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
                                     Previous
                                 </button>
-                                <div className="text-end">
-                                    <button type="button" onClick={() => existPageOptician()} className="btn btn-danger" >Cancel</button>
-                                </div>
                                 {optician_approval !== ' ' && optician_btn_save === true ?
 
                                     <div className='right  ms-auto'>
@@ -1373,9 +1355,13 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
                 </Form> :
                     <>
                         <div className='text-center' style={{ height: '15rem' }}>
-                            <h1 className='' style={{ fontSize: "5rem", marginTop: '10rem' }}>{msg}</h1>
+                            <h1 className='' style={{ fontSize: "5rem", marginTop: '10rem' }}>{optician_countdown}</h1>
                         </div>
-                    </>}
+                        <div>
+                            <button className='btn btn-primary' onClick={() => existPageOptician()}>Go Back</button>
+                        </div>
+                    </>
+                }
             </CardBody>
 
         </>

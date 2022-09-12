@@ -43,6 +43,7 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
     let [academic_formOptometrist, setAcademic_formOptometrist] = store.academic_formOptometrist;
     let [post_graduateOptometrist, setPost_graduateOptometrist] = store.post_graduateOptometrist
     let [referenceOptometrist, setReferenceOptometrist] = store.referenceOptometrist;
+    let [optometrist_countdown, setOptometrist_countdown] = store.optometrist_countdown;
     const history = useHistory();
     const [check, setCheck] = useState(false);
     const [first_name, setFirst_name] = useState('');
@@ -62,6 +63,7 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
     const [maiden_name, setMaiden_name] = useState('');
     const [emergency_name, setEmergency_name] = useState('');
     const [emergency_address, setEmergency_address] = useState('');
+    const [documents, setDocuments] = useState([]);
 
     const [is_criminal_record, setIs_criminal_record] = useState(false);
     const [is_sentence_record, setIs_sentence_record] = useState(false);
@@ -279,9 +281,10 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop: acceptedFiles => {
-            setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))])
+            documents.push(...acceptedFiles.map(file => Object.assign(file)));
+            setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))]);
         }
-    })
+    });
 
     const renderFilePreview = file => {
         if (file.type.startsWith('image')) {
@@ -291,10 +294,31 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
         }
     }
 
-    const handleRemoveFile = file => {
-        const uploadedFiles = files
-        const filtered = uploadedFiles.filter(i => i.name !== file.name)
-        setFiles([...filtered])
+    const handleRemoveFile = async file => {
+        if (window.confirm('are you sure')) {
+            if (!file.id) {
+                const filteredF = files.filter(i => i.name !== file.name)
+                const filteredD = documents.filter(i => i.name !== file.name)
+                setFiles([...filteredF]);
+                setDocuments([...filteredD]);
+            } else {
+                try {
+                    setLoading(true);
+                    const filteredD = documents.filter(i => i.name !== file.name);
+                    const url = `documents/delete/${file.id}`;
+                    const rs = await request(url, 'DELETE', true);
+                    if (rs.success === true) {
+                        setDocuments([...filteredD]);
+                    }
+                    setLoading(false);
+                } catch (err) {
+                    setLoading(false);
+                    console.log(err);
+                }
+
+            }
+
+        }
     }
 
     const renderFileSize = size => {
@@ -323,15 +347,31 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
     const handleRemoveAllFiles = () => {
         setFiles([])
     }
+    const DocumentList = documents.map((file, index) => (
+        <ListGroupItem key={`${file.name}-${index}`} className='d-flex align-items-center justify-content-between'>
+            <div className='file-details d-flex align-items-center'>
+                <div className='file-preview me-1'> <FileText size='28' /></div>
+                <div>
+                    <p className='file-name mb-0'>{file.name}</p>
+                    {/* <p className='file-size mb-0'>{renderFileSize(file.size)}</p> */}
+                </div>
+            </div>
+            <Button color='danger' outline size='sm' className='btn-icon' onClick={() => handleRemoveFile(file)}>
+                <X size={14} />
+            </Button>
+        </ListGroupItem>
+    ));
     const uploadedFiles = () => {
         setLoading(true);
         let count = 0;
+        const filteredD = documents.filter(i => !i.id)
+        const files_ = documents.length > 1 ? filteredD : files;
+        console.log(files_);
         const formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-            let file = files[i];
+        for (let i = 0; i < files_.length; i++) {
+            let file = files_[i];
             formData.append("file", file);
             formData.append("upload_preset", "geekyimages");
-
             fetch(`https://api.cloudinary.com/v1_1/doxlmaiuh/image/upload`, {
                 method: "POST",
                 body: formData
@@ -340,12 +380,13 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
                     return response.json();
                 })
                 .then((data) => {
-                    let dataFile = { name: data.original_filename, file: data.secure_url }
-                    allFiles.push(dataFile);
-                    // console.log(data.secure_url);
+                    let dataFile = { name: data.original_filename, file: data.secure_url };
+                    if (dataFile?.name !== null) {
+                        allFiles.push(dataFile);
+                    }
                     count++
-                    if (count === files.length) {
-                        console.log(count);
+                    console.log(count);
+                    if (count === files_.length) {
                         setLoading(false);
                         return MySwal.fire({
                             title: 'Good job!',
@@ -356,6 +397,7 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
                         })
                     }
                 });
+
         }
     }
 
@@ -377,15 +419,14 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
             setLoading(false);
             // handleSuccess();
             history.push(`/optometrist-dashboard/oo/optometrist/${rs?.data?.id}`)
-            setId_meansOpto(' ');
-            setId_noOpto(' ');
-            setEmergency_name(' ');
-            setEmergency_address(' ');
-            setIf_explain(' ');
+            setId_meansOpto('');
+            setId_noOpto('');
+            setEmergency_name('');
+            setEmergency_address('');
+            setIf_explain('');
             setAcademic_formOptometrist([]);
             setReferenceOptometrist([]);
             setPost_graduateOptometrist([]);
-            existPageOptometrist();
         }
         catch (err) {
             setLoading(false);
@@ -421,6 +462,7 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
             const url = `optometrists/create?senderid=${user.id}`;
             const rs = await request(url, 'POST', true, data);
             setLoading(false);
+            console.log(rs);
             history.push(`/optometrist-dashboard/oo/optometrist/${rs?.data?.id}`)
             // handleSuccess();
             setId_meansOpto('');
@@ -431,7 +473,6 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
             setAcademic_formOptometrist([]);
             setReferenceOptometrist([]);
             setPost_graduateOptometrist([]);
-            existPageOptometrist();
         }
         catch (err) {
             setLoading(false);
@@ -462,11 +503,12 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
         if (id_sign.checked === false) {
             return warningError();
         }
-        // console.log(data);
+        const docu = { documents: allFiles };
         try {
             setLoading(true);
             const url = `optometrists/update/${oneOptometrist.id}?senderid=${user.id}`;
             const rs = await request(url, 'PATCH', true, data);
+            const fs = await request(`documents/upload?name=optometrist&id=${oneOptometrist?.id}`, 'POST', true, docu);
             setLoading(false);
             handleSuccess();
             setId_meansOpto('');
@@ -495,11 +537,12 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
         if (id_sign.checked === false) {
             return warningError();
         }
-        // console.log(data);
+        const docu = { documents: allFiles };
         try {
             setLoading(true);
             const url = `optometrists/update/${oneOptometrist.id}?senderid=${user.id}`;
             const rs = await request(url, 'PATCH', true, data);
+            const fs = await request(`documents/upload?name=optometrist&id=${oneOptometrist?.id}`, 'POST', true, docu);
             setLoading(false);
             handleSuccess();
             setId_meansOpto('');
@@ -524,9 +567,10 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
             setLoading(true);
             const url = `optometrists/${oneOptometrist.id}`;
             const rs = await request(url, 'GET', true);
-            setAcademic_formOptometrist(rs.data.user.optometrist.academic);
-            setPost_graduateOptometrist(rs.data.user.optometrist.certifications);
-            setReferenceOptometrist(rs.data.user.optometrist.referees);
+            console.log(rs.data)
+            setAcademic_formOptometrist(rs.data.academics);
+            setPost_graduateOptometrist(rs.data.certifications);
+            setReferenceOptometrist(rs.data.referees);
             setLoading(false);
         } catch (err) {
             setLoading(false);
@@ -539,10 +583,10 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
 
     const dateCountDown = useCallback(() => {
         // console.log(optometrists)
-        if (optometrists === null) {
-            return setMsg('0d  0h 0m 0s');
+        if (optometrists === null || optometrists?.isApprovedByAdmin === false || optometrists?.isApprovedByAdmin === null) {
+            return setOptometrist_countdown('0d  0h 0m 0s');
         } else {
-            let timeSet = new Date(optometrists.createdAt).toUTCString().split(' ');
+            let timeSet = new Date(optometrists?.updatedAt).toUTCString().split(' ');
             // console.log(optometrists)
 
             let xx = `${timeSet[2]} ${timeSet[1]} ${parseInt(timeSet[3]) + 1} ${timeSet[4]}`;
@@ -563,53 +607,60 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
                 let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                setMsg(days + "d " + hours + "h "
+                setOptometrist_countdown(days + "d " + hours + "h "
                     + minutes + "m " + seconds + "s ");
                 // If the count down is finished, write some text
                 if (distance < 0) {
                     clearInterval(x);
                     // document.getElementById("demo").innerHTML = "EXPIRED";
-                    setMsg("Expired")
+                    setOptometrist_countdown("Expired")
                 }
             }, 1000);
         }
-    }, [optometrists])
-    const fetchUserDetails = useCallback(() => {
+    }, [optometrists, setOptometrist_countdown])
+    const fetchUserDetails = useCallback(async () => {
+        setFirst_name(user.firstName);
+        setMiddle_name(user.otherNames);
+        setLast_name(user.surname);
+        setUser_email(user.email);
+        setUser_phone(user.phone);
+        setDate_of_birth(new Date(user.dateOfBirth).toDateString());
+        setState(user.stateOfOrigin);
+        setLga(user.lgaOrigin);
+        setHome_address(user.address);
+        setPermanent_address(user.addressOrigin);
+        setAny_name(user.previousNames);
+        setSex(user.gender);
+        setMaiden_name(user.maidenName);
+        setMarital_status(user.maritalStatus);
+        setIs_criminal_record(user.isConvicted);
+        setIs_sentence_record(user.isSentenced);
+        setIs_drug_issue(user.hasDrugIssue);
+        setIf_explain(user.drugUseDetails);
+        console.log(oneOptometrist);
+
         try {
-            // console.log(optometrists);
-            setFirst_name(user.firstName);
-            setMiddle_name(user.otherNames);
-            setLast_name(user.surname);
-            setUser_email(user.email);
-            setUser_phone(user.phone);
-            setDate_of_birth(new Date(user.dateOfBirth).toDateString());
-            setState(user.stateOfOrigin);
-            setLga(user.lgaOrigin);
-            setHome_address(user.address);
-            setPermanent_address(user.addressOrigin);
-            setAny_name(user.previousNames);
-            setSex(user.gender);
-            setMaiden_name(user.maidenName);
-            setMarital_status(user.maritalStatus);
-            setIs_criminal_record(user.isConvicted);
-            setIs_sentence_record(user.isSentenced);
-            setIs_drug_issue(user.hasDrugIssue);
-            setIf_explain(user.drugUseDetails);
+            setLoading(true);
+            const url = `optometrists/${oneOptometrist?.id}`;
+            const rs = await request(url, 'GET', true);
+            console.log(rs.data);
+            setDocuments(rs.data.documents);
+            setLoading(false);
         } catch (err) {
+            setLoading(false);
             console.log(err)
         }
-    }, [user.firstName, user.otherNames, user.surname, user.email, user.phone, user.dateOfBirth, user.stateOfOrigin,
-    user.lgaOrigin, user.address, user.addressOrigin, user.previousNames, user.gender, user.maidenName, user.maritalStatus, user.isConvicted,
-    user.isSentenced, user.hasDrugIssue, user.drugUseDetails])
+    }, [oneOptometrist?.id, setDocuments])
 
     useEffect(() => {
         fetchUserDetails();
-        dateCountDown();
-    }, [fetchUserDetails, dateCountDown]);
+        // dateCountDown();
+    }, [fetchUserDetails]);
     return (
         <>
+            <>{loading === true ? <LoaderGrow /> : ''}</>
             <CardBody className="form-steps">
-                {msg === "Expired" ? <Form>
+                {optometrist_countdown === "Expired" ? <Form>
                     <div className="mb-4">
                         <Nav
                             className="nav nav-tabs nav-tabs-custom nav-success nav-justified mb-3"
@@ -1159,31 +1210,36 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="col-lg-12 d-flex justify-content-between">
-                                                        <div className="text-end">
-                                                            <button type="button" onClick={() => existPageOptometrist()} className="btn btn-danger" >Cancel</button>
-                                                        </div>
-                                                        <div>
-                                                            {optometrist_approval !== ' ' && optometrist_btn_save === true ?
-                                                                <div className="text-end">
-                                                                    <div className='text-end'>
-                                                                        <button type="button" onClick={() => updateAndExitFullReg()} disabled={read_only_optometrist} className="btn mx-2" style={{ background: ' rgb(0, 58, 3)', color: '#fff', borderColor: '1px solid rgb(0,58,3)' }}>Update and Exit</button>
-                                                                        <button type="button" onClick={() => updateFullReg()} disabled={read_only_optometrist} className="btn mx-2" style={{ background: ' rgb(0, 58, 3)', color: '#fff', borderColor: '1px solid rgb(0,58,3)' }}>Update and Submit</button>
-                                                                    </div>
-                                                                </div>
-                                                                :
-                                                                <div className="text-end">
-                                                                    <button type="button" onClick={() => saveAndExitFullReg()} className="btn" style={{ background: ' rgb(0, 58, 3)', color: '#fff', borderColor: '1px solid rgb(0,58,3)' }}>Save and Exit</button>
-                                                                    <button type="button" onClick={() => handleFullReg()} className="btn mx-2" style={{ background: ' rgb(0, 58, 3)', color: '#fff', borderColor: '1px solid rgb(0,58,3)' }}>Submit</button>
-                                                                </div>
-                                                            }
-                                                        </div>
-                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div className="d-flex align-items-start gap-3 mt-4">
+                                <button
+                                    type="button"
+                                    className="btn btn-primary btn-label previestab"
+                                    onClick={() => {
+                                        existPageOptometrist();
+                                    }}
+                                >
+                                    <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
+                                    Go Back
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-label right ms-auto nexttab nexttab"
+                                    style={{ background: ' rgb(0, 58, 3)', color: '#fff', borderColor: '1px solid rgb(0,58,3)' }}
+                                    onClick={() => {
+                                        toggleArrowTab(activeArrowTab + 1);
+                                    }}
+                                >
+                                    <i className="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>
+                                    Next
+                                </button>
                             </div>
                         </TabPane>
 
@@ -1215,18 +1271,18 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
                                         </ol>
                                     </div>
                                 </div>
-                                {files.length ? (
+                                {files.length || documents.length ? (
                                     <Fragment>
-                                        <ListGroup className='my-2'>{fileList}</ListGroup>
+                                        <ListGroup className='my-2'>{documents?.length >= 1 ? DocumentList : fileList}</ListGroup>
                                         <div className='d-flex justify-content-end'>
-                                            <Button className='me-1' color='danger' outline onClick={handleRemoveAllFiles}>
-                                                Remove All
-                                            </Button>
+                                            <div></div>
+                                            {/* <Button className='me-1' color='danger' outline onClick={handleRemoveAllFiles}>
+                                                        Remove All
+                                                    </Button> */}
                                             <Button color='primary' onClick={() => uploadedFiles()}>Upload Files</Button>
                                         </div>
                                     </Fragment>
                                 ) : null}
-                                {/* <Button color='success' className='mt-2' onClick={() => sendUploadedFiles()}>Submit</Button> */}
 
                             </Col>
                             <div className="d-flex align-items-start gap-3 mt-4">
@@ -1240,9 +1296,6 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
                                     <i className="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>{" "}
                                     Previous
                                 </button>
-                                <div className="text-end">
-                                    <button type="button" onClick={() => existPageOptometrist()} className="btn btn-danger" >Cancel</button>
-                                </div>
                                 {optometrist_approval !== ' ' && optometrist_btn_save === true ?
 
                                     <div className='right  ms-auto'>
@@ -1299,10 +1352,16 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
                             </div>
                         </TabPane>
                     </TabContent>
+
                 </Form> :
-                    <div className='text-center' style={{ height: '15rem' }}>
-                        <h1 className='' style={{ fontSize: "5rem", marginTop: '10rem' }}>{msg}</h1>
-                    </div>
+                    <>
+                        <div className='text-center' style={{ height: '15rem' }}>
+                            <h1 className='' style={{ fontSize: "5rem", marginTop: '10rem' }}>{optometrist_countdown}</h1>
+                        </div>
+                        <div>
+                            <button className='btn btn-primary' onClick={() => existPageOptometrist()}>Go Back</button>
+                        </div>
+                    </>
                 }
             </CardBody>
         </>

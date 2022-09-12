@@ -28,19 +28,19 @@ const RepeatingAcademicFormOptometrist = ({ academic_form, addAcademic, academic
         setFrom_academic('');
         setTo_academic('');
     }
-    const newAcademicHttp = () => {
+    const newAcademicHttp = async () => {
         // console.log('ll')
         const data = {
             institutionName: name_academic, startDate: new Date(from_academic).toUTCString(), endDate: new Date(to_academic).toUTCString(),
-            grade: grade_academic, opticianId: oneOptometrist.id
+            grade: grade_academic, optometristId: oneOptometrist.id
         }
         if (name_academic === '') {
             return
         }
         try {
-            const url = `academics/create?senderid=${userId}`;
-            const rs = request(url, 'POST', true, data);
-            // console.log(rs);
+            const url = `optometrist/academics/create?senderid=${userId}`;
+            const rs =  await request(url, 'POST', true, data);
+            console.log(rs);
             refreshUpdate();
         }
         catch (err) {

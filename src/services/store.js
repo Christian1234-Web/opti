@@ -32,11 +32,17 @@ const StoreContext = ({ children }) => {
     let [optometrist_btn_update, setOptometrist_btn_update] = useState(false);
     let [adminType, setAdminType] = useState(null);
     let [user_type, setUser_type] = useState(null);
-    let [username, setUsername] = useState(null)
+    let [username, setUsername] = useState(null);
+    let [optician_countdown, setOptician_countdown] = useState('');
+    let [optometrist_countdown, setOptometrist_countdown] = useState('');
+
+
 
 
     let states = {
         msg: [msg, setMsg],
+        optician_countdown: [optician_countdown, setOptician_countdown],
+        optometrist_countdown: [optometrist_countdown, setOptometrist_countdown],
         facility_approval: [facility_approval, setFacility_approval],
         read_only: [read_only, setRead_only],
         read_only_optometrist: [read_only_optometrist, setRead_only_optometrist],
@@ -58,7 +64,7 @@ const StoreContext = ({ children }) => {
         adminType: [adminType, setAdminType],
         user_type: [user_type, setUser_type],
         username: [username, setUsername],
-        indexing_approval: [indexing_approval, setIndexing_approval], 
+        indexing_approval: [indexing_approval, setIndexing_approval],
         read_only_indexing: [read_only_indexing, setRead_only_indexing]
 
     };

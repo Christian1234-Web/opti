@@ -187,13 +187,15 @@ const OpticianOptometrist = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By S.D
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'optician' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'optician' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedBySD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'optometrist' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'optometrist' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedBySD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }
@@ -203,14 +205,15 @@ const OpticianOptometrist = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By H.O.D
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'optician' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'optician' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'optometrist' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
-                                                }
+                                                {type.type === 'optometrist' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""}
                                             </>
                                         }
 
@@ -218,14 +221,15 @@ const OpticianOptometrist = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By Admin
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'optician' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'optician' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByAdmin === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'optometrist' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
-                                                }
+                                                {type.type === 'optometrist' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByAdmin === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""}
                                             </>
                                         }
 
@@ -237,7 +241,7 @@ const OpticianOptometrist = () => {
                                 <Row className="g-3">
                                     <Col sm={4}>
                                         <h6 className="text-muted text-uppercase fw-semibold mb-3">
-                                            User Informations
+                                            User Information
                                         </h6>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">First Name:</p>
@@ -298,23 +302,19 @@ const OpticianOptometrist = () => {
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Emergency Contact Name:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.emergencyName}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails?.emergencyName}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Emergency Contact Address:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.emergencyAddress}</> : "--"}</p>
-                                        </div>
-                                        <div className="d-flex">
-                                            <p className="fw-medium mb-2">Means of Identification:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.meansOfIdentification}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails?.emergencyAddress}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Means of Identification:</p>
                                             <p className="text-muted mb-1 mx-2">
-                                                {idDetails === null ? '333344' : <>
-                                                    {type.type === 'optician' ? <>{idDetails.user?.meansOfIdentification}</> :
+                                                {idDetails === null ? '--' : <>
+                                                    {type.type === 'optician' ? <>{idDetails?.meansOfIdentification}</> :
                                                         <>
-                                                            {idDetails.user?.meansOfIdentification}
+                                                            {idDetails?.meansOfIdentification}
                                                         </>
                                                     }
                                                 </>}
@@ -323,10 +323,10 @@ const OpticianOptometrist = () => {
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2"> Identification Number:</p>
                                             <p className="text-muted mb-1 mx-2">
-                                                {idDetails === null ? '333344' : <>
-                                                    {type.type === 'optician' ? <>{idDetails.user?.identificationNumber}</> :
+                                                {idDetails === null ? '--' : <>
+                                                    {type.type === 'optician' ? <>{idDetails?.identificationNumber}</> :
                                                         <>
-                                                            {idDetails.user?.identificationNumber}
+                                                            {idDetails?.identificationNumber}
                                                         </>
                                                     }
                                                 </>}

@@ -12,6 +12,9 @@ import { FileText } from "react-feather";
 import SSRStorage from "../../../../services/storage";
 import { USER_COOKIE } from "../../../../services/constants";
 const storage = new SSRStorage();
+
+
+
 const FacilityIndexing = () => {
 
     const [idDetails, setIdDetails] = useState(null)
@@ -180,10 +183,11 @@ const FacilityIndexing = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By S.D
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'facility' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'facility' ? idDetails?.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedBySD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }
@@ -193,11 +197,11 @@ const FacilityIndexing = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By H.O.D
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'facility' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
-                                                }
+                                                {type.type === 'facility' ? idDetails?.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""}
                                             </>
                                         }
 
@@ -207,8 +211,9 @@ const FacilityIndexing = () => {
                                         </p>
                                         {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
                                             <>
-                                                {type.type === 'facility' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'facility' ? idDetails?.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }

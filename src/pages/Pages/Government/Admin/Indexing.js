@@ -61,7 +61,6 @@ function Indexing() {
             timer: 2000
         })
     }
-  
 
     const handleUpdateComment = () => {
         return MySwal.fire({
@@ -116,7 +115,6 @@ function Indexing() {
             setMeta(rs.paging);
             setCount(Math.ceil(rs.paging.total / rowsPerPage));
             setLoading(false);
-            // console.log(rs, rs.paging.total);
         } catch (err) {
             setLoading(false);
             if (err.message === 'No record') {
@@ -248,9 +246,9 @@ function Indexing() {
                         <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.user.indexing.status}</span></span>
                     }
                     </td>
-                    <td>{e.user.indexing.isApprovedBySD === false ? 'Awaiting Approval' : 'Approved'}</td>
-                    <td>{e.user.indexing.isApprovedByHOD === false ? 'Awaiting Approval' : 'Approved'}</td>
-                    <td>{e.user.indexing.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.user.indexing.isApprovedBySD === null ? 'Awaiting Approval' : e.user.indexing.isApprovedBySD === false ? 'Disapproved' : 'Approved'}</td>
+                    <td>{e.user.indexing.isApprovedByHOD === null ? 'Awaiting Approval' : e.user.indexing.isApprovedByHOD === false ? 'Disapproved' : 'Approved'}</td>
+                    <td>{e.user.indexing.isApprovedByAdmin === null ? 'Awaiting Approval' : e.user.indexing.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
                         <div className="hstack  flex-wrap">
                             <button href="#" type="button" className="btn btn-ghost-secondary btn-icon btn-sm fs-16"
@@ -290,9 +288,9 @@ function Indexing() {
                         <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.indexing.status}</span></span>
                     }
                     </td>
-                    <td>{e.indexing.isApprovedBySD === false ? 'Awaiting Approval' : 'Approved'}</td>
-                    <td>{e.indexing.isApprovedByHOD === false ? 'Awaiting Approval' : 'Approved'}</td>
-                    <td>{e.indexing.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.indexing.isApprovedBySD === null ? 'Awaiting Approval' : e.indexing.isApprovedBySD === false ? 'Disapproved' : 'Approved'}</td>
+                    <td>{e.indexing.isApprovedByHOD === null ? 'Awaiting Approval' : e.indexing.isApprovedByHOD === false ? 'Disapproved' : 'Approved'}</td>
+                    <td>{e.indexing.isApprovedByAdmin === null ? 'Awaiting Approval' : e.indexing.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
                         <div className="hstack flex-wrap">
                             <button href="#" type="button" className="btn btn-ghost-secondary btn-icon btn-sm fs-16"
@@ -332,9 +330,9 @@ function Indexing() {
                         <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                     }
                     </td>
-                    <td>{e.isApprovedBySD === false ? 'Awaiting Approval' : 'Approved'}</td>
-                    <td>{e.isApprovedByHOD === false ? 'Awaiting Approval' : 'Approved'}</td>
-                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedBySD === null ? 'Awaiting Approval' : e.isApprovedBySD === false ? 'Disapproved' : 'Approved'}</td>
+                    <td>{e.isApprovedByHOD === null ? 'Awaiting Approval' : e.isApprovedByHOD === false ? 'Disapproved' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === null ? 'Awaiting Approval' : e.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
                         <div className="hstack flex-wrap">
                             <button href="#" type="button" className="btn btn-ghost-secondary btn-icon btn-sm fs-16"
@@ -365,9 +363,7 @@ function Indexing() {
     const handlePagination = page => {
         fetchIndexings(page.selected + 1)
         setCurrentPage(page.selected + 1)
-    }
-    // const count = Number((meta.total / rowsPerPage).toFixed(0))
-
+    };
     return (
         <>
             <div className="row">
@@ -402,7 +398,7 @@ function Indexing() {
                                         <th scope="col">Customer</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Invoice</th>
-                                        <th scope="col">User Status</th>
+                                        <th scope="col">Status</th>
                                         <th scope="col">S.D Approval</th>
                                         <th scope="col">H.O.D Approval</th>
                                         <th scope="col">Admin Approval</th>

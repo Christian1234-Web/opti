@@ -29,7 +29,7 @@ const CoverSignUp = ({ location }) => {
     const [activeArrowTab, setactiveArrowTab] = useState(4);
     const [passedarrowSteps, setPassedarrowSteps] = useState([1]);
 
-    const [note, setNote] = useState(active_tab === 'facility' ? 'Facility' : active_tab === 'optician' ? 'Optician' : active_tab === 'Optician' ? 'Optometrist' : '1');
+    const [note, setNote] = useState(active_tab === 'facility' ? 'Facility' : active_tab === 'optician' ? 'Optician' : active_tab === 'optometrist' ? 'Optometrist' : 'Facility');
 
     const history = useHistory();
     const facility_ref = useRef();
@@ -55,7 +55,7 @@ const CoverSignUp = ({ location }) => {
             timer: 2000
         })
     }
-    const [cardHeaderTab, setcardHeaderTab] = useState(active_tab === 'facility' ? '1' : active_tab === 'optician' ? '2' : active_tab === 'optometrist' ? '3' : '');
+    const [cardHeaderTab, setcardHeaderTab] = useState(active_tab === 'facility' ? '1' : active_tab === 'optician' ? '2' : active_tab === 'optometrist' ? '3' : '1');
 
     const cardHeaderToggle = (tab) => {
         if (cardHeaderTab !== tab) {
@@ -66,9 +66,6 @@ const CoverSignUp = ({ location }) => {
                 setEmail('');
                 setRegNo('');
                 setError('');
-                optician_ref.current.style.display = 'none';
-                optometrist_ref.current.style.display = 'none';
-                facility_ref.current.style.display = '';
             } else if (tab === '2') {
                 setNote('Optician');
                 setText('DOP/');
@@ -76,11 +73,6 @@ const CoverSignUp = ({ location }) => {
                 setEmail('');
                 setRegNo('');
                 setError('');
-
-                optometrist_ref.current.style.display = 'none';
-                facility_ref.current.style.display = 'none';
-                optician_ref.current.style.display = '';
-
             } else if (tab === '3') {
                 setNote('Optometrist');
                 setText('ODORBN/');
@@ -88,10 +80,6 @@ const CoverSignUp = ({ location }) => {
                 setEmail('');
                 setRegNo('');
                 setError('');
-
-                facility_ref.current.style.display = 'none';
-                optician_ref.current.style.display = 'none';
-                optometrist_ref.current.style.display = '';
 
             }
         }
@@ -242,9 +230,8 @@ const CoverSignUp = ({ location }) => {
                                                             </div>
 
                                                             <div className="mt-4">
-                                                                <button onClick={() => register('1')} ref={facility_ref} style={{ display: '' }} id='facility' className="btn btn-success w-100" type="button">Sign Up for Facility</button>
-                                                                <button onClick={() => register('2')} ref={optician_ref} style={{ display: 'none' }} id='optician' className="btn btn-success w-100" type="button">Sign Up for Optician</button>
-                                                                <button onClick={() => register('3')} ref={optometrist_ref} style={{ display: 'none' }} id='optometrist' className="btn btn-success w-100" type="button">Sign Up for Optometrist</button>
+
+                                                                <button onClick={() => register()} id='optometrist' className="btn btn-success w-100" type="button">Sign Up for {note}</button>
 
                                                             </div>
                                                         </form>

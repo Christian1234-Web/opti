@@ -23,6 +23,8 @@ function ViewPractice() {
     const [loading, setLoading] = useState(false);
 
     const [practices, setPractices] = useState([]);
+    const [user, setUser] = useState([]);
+
     const [viewOp, setViewOp] = useState(null);
 
     const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -43,7 +45,7 @@ function ViewPractice() {
 
     const id = useParams();
     const type = useParams();
-
+    console.log(type.type)
 
     const fetchPractices = useCallback(async (page) => {
 
@@ -53,15 +55,17 @@ function ViewPractice() {
         try {
             setLoading(true);
             const rs = await request(url, 'GET', true);
-            if (rs.data.type === 'practice') {
-                setPractices(rs.data);
+            console.log(rs);
+            setUser(rs.data)
+            if (rs?.data?.type === 'facility') {
+                console.log('hi');
+                setPractices(rs?.data?.practices);
             } else {
-                setViewOp(rs.data)
+                setViewOp(rs?.data)
             }
             // setMeta(rs.paging);
             // setCount(Math.ceil(rs.paging.total / rowsPerPage));
             setLoading(false);
-            // console.log(rs);
             // console.log(viewOp);
 
         } catch (err) {
@@ -87,7 +91,7 @@ function ViewPractice() {
         setCurrentPage(page.selected + 1)
     }
     // const count = Number((meta.total / rowsPerPage).toFixed(0))
-    const renderFacility = practices.map((e, i) => {
+    const renderFacility = practices?.map((e, i) => {
         if (practices.length > 0) {
             return (
                 <tr key={i}>
@@ -122,9 +126,9 @@ function ViewPractice() {
                             <div className="col-sm-8 w-100">
                                 <div className="p-3 row justify-content-between">
                                     <Col>
-                                        {viewOp !== null && practices !== null ? <p className="fs-16 lh-base text-white fw-semibold"> License History For {type.type === 'practice' ? <>{practices.firstName || 'George'} {practices.surname || 'Web'} </>
-                                            : <>{viewOp.firstName || 'George'} {viewOp.surname || 'Web'}</>} with id. no. {type.type === 'practice' ? <>{practices.id || ''}</> : <>{viewOp.id || ''}
-                                            </>} 
+                                        {viewOp !== null || practices !== null ? <p className="fs-16 lh-base text-white fw-semibold"> License History For {type.type === 'practice' ? <>{user?.firstName} {user?.surname} </>
+                                            : <>{user?.firstName || 'George'} {user?.surname || 'Web'}</>} with id. no. {type.type === 'practice' ? <>{user.id || ''}</> : <>{user.id || ''}
+                                            </>}
                                         </p> : ''}
                                     </Col>
                                     <Col lg={4}>
@@ -169,26 +173,27 @@ function ViewPractice() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {viewOp !== null && practices !== null ?
-                                                <>   {type.type === 'practice' ? <renderFacility />
+
+                                            {viewOp !== null || practices !== null ?
+                                                <>   {type.type === 'practice' ? <>{renderFacility}</>
                                                     : type.type === 'optician' ? <tr>
                                                         <th scope="row"><Link to="#" className="fw-medium">{`1`}</Link></th>
-                                                        <td>{new Date(viewOp.optician.createdAt).toDateString()}</td>
-                                                        <td>{viewOp.optician.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{viewOp.optician.status}</span></span> :
-                                                            <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{viewOp.optician.status}</span></span>
+                                                        <td>{new Date(viewOp?.optician?.createdAt).toDateString()}</td>
+                                                        <td>{viewOp?.optician?.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{viewOp?.optician?.status}</span></span> :
+                                                            <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{viewOp?.optician?.status}</span></span>
                                                         }
                                                         </td>
-                                                        <td>{viewOp.optician.isApprovedByAdmin === false ? 'False' : 'True'}</td>
-                                                        <td>{viewOp.optician.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                                                        <td>{viewOp?.optician?.isApprovedByAdmin === false ? 'False' : 'True'}</td>
+                                                        <td>{viewOp?.optician?.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
                                                     </tr > : <tr>
                                                         <th scope="row"><Link to="#" className="fw-medium">{`1`}</Link></th>
-                                                        <td>{new Date(viewOp.optometrist.createdAt).toDateString()}</td>
-                                                        <td>{viewOp.optometrist.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{viewOp.optometrist.status}</span></span> :
-                                                            <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{viewOp.optometrist.status}</span></span>
+                                                        <td>{new Date(viewOp?.optometrist?.createdAt).toDateString()}</td>
+                                                        <td>{viewOp?.optometrist?.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{viewOp?.optometrist?.status}</span></span> :
+                                                            <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{viewOp?.optometrist?.status}</span></span>
                                                         }
                                                         </td>
-                                                        <td>{viewOp.optometrist.isApprovedByAdmin === false ? 'False' : 'True'}</td>
-                                                        <td>{viewOp.optometrist.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                                                        <td>{viewOp?.optometrist?.isApprovedByAdmin === false ? 'False' : 'True'}</td>
+                                                        <td>{viewOp?.optometrist?.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
                                                     </tr >
                                                 }</> : ''}
                                         </tbody>
@@ -213,12 +218,17 @@ function ViewPractice() {
                                             containerClassName={'pagination react-paginate justify-content-end p-1'}
                                         />
                                     </div>
-                                    <div className="align-items-center mt-2 row g-3 text-center text-sm-start">
-                                        <div className="col-sm">
-                                            <div className="text-muted">Available Results <span className="fw-semibold">
-                                                {practices.length || '1'}
-                                            </span>
+                                    <div className="align-items-center mt-2 d-flex justify-content-between">
+                                        <Link to='/search-dashboard'>
+                                            <div className="">
+                                                <button className="btn btn-primary">
+                                                    Go Back
+                                                </button>
                                             </div>
+                                        </Link>
+                                        <div className="text-muted">Available Results <span className="fw-semibold">
+                                            {practices.length || '1'}
+                                        </span>
                                         </div>
                                     </div>
                                 </div>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CardBody, Row, Col, Card, Table, CardHeader, Container } from "reactstrap";
+import { CardBody, Row, Col, Card, Table, CardHeader, Container, Modal, Button, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import BreadCrumb from "../../../../Components/Common/BreadCrumb";
 import MetaTags from 'react-meta-tags';
 import { Link, useParams } from "react-router-dom";
@@ -9,21 +9,44 @@ import logoLight from "../../../../assets/images/odorbnlogo.png";
 import { request } from "../../../../services/utilities";
 import { LoaderGrow } from "../../../AdvanceUi/Loader/loader";
 import { FileText } from "react-feather";
+import { USER_COOKIE } from "../../../../services/constants";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import SSRStorage from "../../../../services/storage";
+const storage = new SSRStorage();
+const MySwal = withReactContent(Swal);
+
 
 const IndexingFacility = () => {
     const [idDetails, setIdDetails] = useState(null)
     const [loading, setLoading] = useState(false)
     const [documents, setDocuments] = useState([])
-
+    const [modal_list, setmodal_list] = useState(false);
+    const [comment, setComment] = useState('');
+    const [which, setWhich] = useState('')
+    const id = useParams();
+    const type = useParams();
 
 
     //Print the Invoice
     const printInvoice = () => {
         window.print();
     };
+    const handleError = () => {
+        return MySwal.fire({
+            title: 'Opps!',
+            text: 'Something went wrong!',
+            icon: 'error',
+            showConfirmButton: false,
+            timer: 2000
+        })
+    }
 
-    const id = useParams();
-    const type = useParams();
+    function tog_list(e) {
+        setWhich(e)
+        setmodal_list(!modal_list);
+        setComment('');
+    }
 
     const downloadFile = (e) => {
         const linkSource = e;
@@ -35,6 +58,41 @@ const IndexingFacility = () => {
         downloadLink.download = fileName;
         downloadLink.click();
     }
+    const approveOrDisapprove = async type => {
+        const user = await (new SSRStorage()).getItem(USER_COOKIE);
+        const data = { indexingId: idDetails?.indexing?.id, note: comment }
+        try {
+            setLoading(true);
+            const url = `indexings/${type}?role=${user.type.trim()}&senderid=${user.id}`;
+            const rs = await request(url, 'POST', true, data);
+            setLoading(false);
+            setmodal_list(false);
+            if (rs.success === true) {
+                fetchDetailsOfId();
+                return MySwal.fire({
+                    text: `${type} Successfully`,
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+        }
+        catch (err) {
+            setLoading(false);
+            setmodal_list(false);
+            if (err.message) {
+                return MySwal.fire({
+                    title: 'Opps!',
+                    text: err.message,
+                    icon: 'warning',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+            handleError();
+            console.log(err);
+        }
+    }
 
     const fetchDetailsOfId = useCallback(async () => {
         setLoading(true);
@@ -42,7 +100,7 @@ const IndexingFacility = () => {
         try {
 
             const rs = await request(url, 'GET', true);
-            const urlf = `indexings/${rs.data.indexing.id}`
+            const urlf = `indexings/${rs.data.indexing?.id}`
             const fl = await request(urlf, 'GET', true);
             setIdDetails(rs.data);
             setDocuments(fl.data.documents);
@@ -61,9 +119,31 @@ const IndexingFacility = () => {
     return (
         <div className="page-content">
             <Header />
-            {/* <MetaTags> 
-          <title>Invoice Details | Velzon - React Admin & Dashboard Template</title>
-      </MetaTags> */}
+            <Modal isOpen={modal_list} toggle={() => { tog_list(); }} centered >
+                <ModalHeader className="bg-light p-3">
+                    Make Comment and Approve
+                    {/* <Button type="button" onClick={() => { setmodal_list(false); }} className="btn-close" aria-label="Close" >
+                    </Button> */}
+                </ModalHeader>
+                <form>
+                    <ModalBody>
+                        <div className="mb-3">
+                            {/* <label htmlFor="customername-field" className="form-label">C</label> */}
+                            <textarea type="text" style={{ height: "20rem" }} id="customername-field" className="form-control"
+                                value={comment} onChange={e => setComment(e.target.value)}
+                                placeholder="Enter comment" required />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <div className="hstack gap-2 justify-content-end">
+                            <button type="button" className="btn btn-light" onClick={() => setmodal_list(false)}>Close</button>
+                            {which === 'approve' ? <button type="button" className="btn btn-success" id="edit-btn" onClick={() => approveOrDisapprove('approve')}>Approve</button>
+                                : <button type="button" className="btn btn-success" id="edit-btn" onClick={() => approveOrDisapprove('disapprove')}>Disapprove</button>
+                            }
+                        </div>
+                    </ModalFooter>
+                </form>
+            </Modal>
             <Container fluid>
                 {/* <BreadCrumb title="Invoice Details" pageTitle="Invoices" /> */}
                 <>{loading === true ? <LoaderGrow /> : " "}</>
@@ -104,7 +184,7 @@ const IndexingFacility = () => {
                                                 <> {type.type} register user :</>
                                             </span>{" "}
                                             {idDetails !== null ? <>{idDetails.firstName} {idDetails.surname}</> :
-                                                'Mr George'
+                                                '--'
                                             }
 
                                         </h6>
@@ -112,28 +192,28 @@ const IndexingFacility = () => {
                                             <span className="text-muted text-uppercase fw-normal">
                                                 <> {type.type} registration no :</>
                                             </span>{" "}
-                                            {idDetails === null ? '0002' : <>
-                                                <>{idDetails.indexing.id}</>
+                                            {idDetails === null ? '--' : <>
+                                                <>{idDetails.indexing?.id}</>
                                             </>}
 
                                         </h6>
                                         <h6>
                                             <span className="text-muted fw-normal text-uppercase">User ID :</span>{" "}
                                             {idDetails !== null ? <>{idDetails.id}</> :
-                                                '1'
+                                                '--'
                                             }
                                         </h6>
                                         <h6>
                                             <span className="text-muted fw-normal text-uppercase">Email :</span>{" "}
                                             {idDetails !== null ? <>{idDetails.email}</> :
-                                                'xxx@gmailcom'
+                                                '--'
                                             }
                                         </h6>
 
                                         <h6 className="mb-0">
                                             <span className="text-muted fw-normal text-uppercase">Contact No :</span>{" "}
                                             {idDetails !== null ? <>{idDetails.phone} </> :
-                                                '+(01) 234 6789'
+                                                '--'
                                             }
 
                                         </h6>
@@ -160,7 +240,7 @@ const IndexingFacility = () => {
                                         </h5>
                                             :
                                             <>
-                                                <h5 className="fs-14 mb-0">{new Date(idDetails.indexing.createdAt).toDateString()}</h5>
+                                                <h5 className="fs-14 mb-0">{new Date(idDetails.indexing?.createdAt).toDateString()}</h5>
                                             </>
                                         }
 
@@ -169,10 +249,11 @@ const IndexingFacility = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By S.D
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'indexing' ? idDetails.indexing.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'indexing' ? idDetails.indexing?.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails.indexing?.isApprovedBySD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }
@@ -182,10 +263,11 @@ const IndexingFacility = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By H.O.D
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'indexing' ? idDetails.indexing.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'indexing' ? idDetails.indexing?.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails.indexing?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }
@@ -194,10 +276,11 @@ const IndexingFacility = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By Admin
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
-                                                {type.type === 'indexing' ? idDetails.indexing.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'indexing' ? idDetails.indexing?.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails.indexing?.isApprovedByAdmin === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }
@@ -244,18 +327,7 @@ const IndexingFacility = () => {
                                             <p className="fw-medium mb-2">State of Origin:</p>
                                             <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.stateOfOrigin}</> : "Kaduna"}</p>
                                         </div>
-                                        <div className="d-flex">
-                                            <p className="fw-medium mb-2">Local Government:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.lgaOrigin}</> : "boki"}</p>
-                                        </div>
-                                        <div className="d-flex">
-                                            <p className="fw-medium mb-2">Home Address:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.address}</> : "maitama"}</p>
-                                        </div>
-                                        <div className="d-flex">
-                                            <p className="fw-medium mb-2">Office/ Practice Address:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.officeAddress}</> : "maitama"}</p>
-                                        </div>
+
                                     </Col>
                                     <Col sm={4}>
                                         <h6 className="text-muted text-uppercase fw-semibold mb-3">
@@ -271,23 +343,17 @@ const IndexingFacility = () => {
                                             <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.maidenName}</> : "non"}</p>
                                         </div>
                                         <div className="d-flex">
-                                            <p className="fw-medium mb-2">Do you have a previous conviction or criminal records?:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null && idDetails.isConvicted === true ? "Yes" : "No"}</p>
-                                        </div>
-
-                                        <div className="d-flex">
-                                            <p className="fw-medium mb-2">Have you ever been sentenced for any crime?:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null && idDetails.isSentenced === true ? "Yes" : "No"}</p>
+                                            <p className="fw-medium mb-2">Local Government:</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.lgaOrigin}</> : "boki"}</p>
                                         </div>
                                         <div className="d-flex">
-                                            <p className="text-muted mb-2">Are you currently or have you had any issues with drug use? :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null && idDetails.hasDrugIssue === true ? "Yes" : "No"}</p>
+                                            <p className="fw-medium mb-2">Home Address:</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.address}</> : "maitama"}</p>
                                         </div>
                                         <div className="d-flex">
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null && idDetails.hasDrugIssue === true ? <>{idDetails.drugUseDetails}</> :
-                                                " "}</p>
+                                            <p className="fw-medium mb-2">Office/ Practice Address:</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.officeAddress}</> : "maitama"}</p>
                                         </div>
-
                                     </Col>
                                     <Col sm={4}>
                                         <h6 className="text-muted text-uppercase fw-semibold mb-3">
@@ -295,43 +361,43 @@ const IndexingFacility = () => {
                                         </h6>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Institution Code Number: ODORBN :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.institutionCode} </> : "ixxx009"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.institutionCode} </> : "ixxx009"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Address of Training Institution :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.institutionAddress} </> : "maitama"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.institutionAddress} </> : "maitama"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Matriculation Number:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.matricNum} </> : "xx1111"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.matricNum} </> : "xx1111"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Date Admitted Into The Training Institution:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{new Date(idDetails.indexing.dateAdmitted).toDateString()} </> : "15-05-2022"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{new Date(idDetails.indexing?.dateAdmitted).toDateString()} </> : "15-05-2022"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Sponsor First Name :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.sponsorFirstName} </> : "15-05-2022"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.sponsorFirstName} </> : "15-05-2022"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Sponsor Surname :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.sponsorSurname} </> : "15-05-2022"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.sponsorSurname} </> : "15-05-2022"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Sponsor Address :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.sponsorAddress} </> : "15-05-2022"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.sponsorAddress} </> : "15-05-2022"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Next of Kin First Name :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.nokFirstName} </> : "15-05-2022"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.nokFirstName} </> : "15-05-2022"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Next of Kin Surname :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.nokSurname} </> : "15-05-2022"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.nokSurname} </> : "15-05-2022"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Next of Kin Address :</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing.nokAddress} </> : "15-05-2022"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.indexing?.nokAddress} </> : "15-05-2022"}</p>
                                         </div>
 
                                     </Col>
@@ -395,15 +461,25 @@ const IndexingFacility = () => {
                                         // onClick={printInvoice}
                                         className="btn btn-danger"
                                     >
-                                        <i className="ri-printer-line align-bottom me-1"></i> Cancel
+                                        <i className="ri-printer-line align-bottom me-1"></i> Go Back
                                     </Link>
-                                    <Link
-                                        to="#"
-                                        onClick={printInvoice}
-                                        className="btn btn-success"
-                                    >
-                                        <i className="ri-printer-line align-bottom me-1"></i> Print
-                                    </Link>
+                                    <div>
+                                        <Link
+                                            to="#"
+                                            onClick={() => tog_list('disapprove')}
+                                            className="btn btn-primary"
+                                        >
+                                            Disapproved
+                                        </Link>
+                                        <Link
+                                            to="#"
+                                            onClick={() => tog_list('approve')}
+                                            className="btn btn-success mx-2"
+                                        >
+                                            Approve
+                                        </Link>
+                                    </div>
+
                                     {/* <Link to="#" className="btn btn-primary">
                                         <i className="ri-download-2-line align-bottom me-1"></i>{" "}
                                         Download
@@ -414,7 +490,7 @@ const IndexingFacility = () => {
                     </Col>
                 </Row>
             </Container>
-        </div>
+        </div >
     );
 };
 

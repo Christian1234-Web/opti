@@ -58,7 +58,7 @@ const EmailSidebar = ({ messages, userId, fetchTickets }) => {
             >
               <FeatherIcon icon="plus-circle" className="icon-xs me-1 icon-dual-light" />
 
-              Compose
+              Send Message
             </button>
           </div>
 
@@ -67,15 +67,16 @@ const EmailSidebar = ({ messages, userId, fetchTickets }) => {
             data-simplebar
           >
             <div className="mail-list mt-3">
-              <Link to="#" className="active">
+              <Link to="#messages" className="active">
                 <i className="ri-inbox-archive-fill me-3 align-middle fw-medium"></i>{" "}
                 Inbox{" "}
                 <span className="badge badge-soft-success ms-auto  ">{messages.length}</span>
               </Link>
-              {/* <Link to="#">
-                <i className="ri-send-plane-2-fill me-3 align-middle fw-medium"></i>{" "}
-                Sent
-              </Link> */}
+              <h5 className="fs-12 text-uppercase text-muted mb-3">Admin</h5>
+              <Link to="#comments" className="active">
+              <i className="ri-inbox-archive-fill me-3 align-middle fw-medium"></i>{" "}
+                Comment
+              </Link>
             </div>
 
             <div className="border-top border-top-dashed pt-3 mt-3">

@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CardBody, Row, Col, Card, Table, CardHeader, Container } from "reactstrap";
-import BreadCrumb from "../../../../Components/Common/BreadCrumb";
-import MetaTags from 'react-meta-tags';
+import { CardBody, Row, Col, Card, Table, CardHeader, Container, Modal, Button, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { Link, useParams } from "react-router-dom";
 import Header from "./Layout";
 import logoDark from "../../../../assets/images/odorbnlogowhite.png";
@@ -9,21 +7,29 @@ import logoLight from "../../../../assets/images/odorbnlogo.png";
 import { request } from "../../../../services/utilities";
 import { LoaderGrow } from "../../../AdvanceUi/Loader/loader";
 import { FileText } from "react-feather";
+import { USER_COOKIE } from "../../../../services/constants";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import SSRStorage from "../../../../services/storage";
+const storage = new SSRStorage();
+const MySwal = withReactContent(Swal);
 
 
 
 const OpticianOptometristViewPage = () => {
     const [idDetails, setIdDetails] = useState(null)
     const [loading, setLoading] = useState(false)
-
-
+    const [modal_list, setmodal_list] = useState(false);
+    const [comment, setComment] = useState('');
+    const [which, setWhich] = useState('');
+    const id = useParams();
+    const type = useParams();
     //Print the Invoice
     const printInvoice = () => {
         window.print();
     };
 
-    const id = useParams();
-    const type = useParams();
+
 
 
     const downloadFile = (e) => {
@@ -37,6 +43,57 @@ const OpticianOptometristViewPage = () => {
         downloadLink.click();
     }
 
+    const handleError = () => {
+        return MySwal.fire({
+            title: 'Opps!',
+            text: 'Something went wrong!',
+            icon: 'error',
+            showConfirmButton: false,
+            timer: 2000
+        })
+    }
+
+    function tog_list(e) {
+        setWhich(e)
+        setmodal_list(!modal_list);
+        setComment('');
+    }
+    const approveOrDisapprove = async types => {
+        const user = await (new SSRStorage()).getItem(USER_COOKIE);
+        const data = type.type === 'optician' ? { opticianId: idDetails?.id, note: comment } : { optometristId: idDetails?.id, note: comment };
+
+        try {
+            setLoading(true);
+            const url = `${type.type}s/${types}?role=${user.type.trim()}&senderid=${user.id}`;
+            const rs = await request(url, 'POST', true, data);
+            setLoading(false);
+            setmodal_list(false);
+            if (rs.success === true) {
+                fetchDetailsOfId();
+                return MySwal.fire({
+                    text: `${types} Successfully`,
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+        }
+        catch (err) {
+            setLoading(false);
+            setmodal_list(false);
+            if (err.message) {
+                return MySwal.fire({
+                    title: 'Opps!',
+                    text: err.message,
+                    icon: 'warning',
+                    showConfirmButton: false,
+                    timer: 2000
+                })
+            }
+            handleError();
+            console.log(err);
+        }
+    }
 
     const fetchDetailsOfId = useCallback(async () => {
         setLoading(true);
@@ -59,9 +116,31 @@ const OpticianOptometristViewPage = () => {
     return (
         <div className="page-content">
             <Header />
-            {/* <MetaTags> 
-          <title>Invoice Details | Velzon - React Admin & Dashboard Template</title>
-      </MetaTags> */}
+            <Modal isOpen={modal_list} toggle={() => { tog_list(); }} centered >
+                <ModalHeader className="bg-light p-3">
+                    Make Comment and Approve
+                    {/* <Button type="button" onClick={() => { setmodal_list(false); }} className="btn-close" aria-label="Close" >
+                    </Button> */}
+                </ModalHeader>
+                <form>
+                    <ModalBody>
+                        <div className="mb-3">
+                            {/* <label htmlFor="customername-field" className="form-label">C</label> */}
+                            <textarea type="text" style={{ height: "20rem" }} id="customername-field" className="form-control"
+                                value={comment} onChange={e => setComment(e.target.value)}
+                                placeholder="Enter comment" required />
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <div className="hstack gap-2 justify-content-end">
+                            <button type="button" className="btn btn-light" onClick={() => setmodal_list(false)}>Close</button>
+                            {which === 'approve' ? <button type="button" className="btn btn-success" id="edit-btn" onClick={() => approveOrDisapprove('approve')}>Approve</button>
+                                : <button type="button" className="btn btn-success" id="edit-btn" onClick={() => approveOrDisapprove('disapprove')}>Disapprove</button>
+                            }
+                        </div>
+                    </ModalFooter>
+                </form>
+            </Modal>
             <Container fluid>
                 {/* <BreadCrumb title="Invoice Details" pageTitle="Invoices" /> */}
                 <>{loading === true ? <LoaderGrow /> : " "}</>
@@ -180,11 +259,13 @@ const OpticianOptometristViewPage = () => {
                                         </p>
                                         {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
                                             <>
-                                                {type.type === 'optician' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'optician' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedBySD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'optometrist' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'optometrist' ? idDetails.isApprovedBySD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedBySD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
                                             </>
                                         }
@@ -196,12 +277,13 @@ const OpticianOptometristViewPage = () => {
                                         </p>
                                         {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
                                             <>
-                                                {type.type === 'optician' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'optician' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'optometrist' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
-                                                }
+                                                {type.type === 'optometrist' ? idDetails.isApprovedByHOD === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""}
                                             </>
                                         }
 
@@ -211,12 +293,13 @@ const OpticianOptometristViewPage = () => {
                                         </p>
                                         {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
                                             <>
-                                                {type.type === 'optician' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
+                                                {type.type === 'optician' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByAdmin === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""
                                                 }
-                                                {type.type === 'optometrist' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Yes</span> :
-                                                    <span className="badge badge-soft-danger fs-11">No</span> : ""
-                                                }
+                                                {type.type === 'optometrist' ? idDetails.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
+                                                    idDetails?.isApprovedByAdmin === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :
+                                                        <span className="badge badge-soft-danger fs-11">Disapproved</span> : ""}
                                             </>
                                         }
 
@@ -294,10 +377,6 @@ const OpticianOptometristViewPage = () => {
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Emergency Contact Address:</p>
                                             <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.emergencyAddress}</> : "--"}</p>
-                                        </div>
-                                        <div className="d-flex">
-                                            <p className="fw-medium mb-2">Means of Identification:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.meansOfIdentification}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Means of Identification:</p>
@@ -487,13 +566,22 @@ const OpticianOptometristViewPage = () => {
                                     >
                                         <i className="ri-printer-line align-bottom me-1"></i> Cancel
                                     </Link>
-                                    <Link
-                                        to="#"
-                                        onClick={printInvoice}
-                                        className="btn btn-success"
-                                    >
-                                        <i className="ri-printer-line align-bottom me-1"></i> Print
-                                    </Link>
+                                    <div>
+                                        <Link
+                                            to="#"
+                                            onClick={() => tog_list('disapprove')}
+                                            className="btn btn-primary"
+                                        >
+                                            Disapproved
+                                        </Link>
+                                        <Link
+                                            to="#"
+                                            onClick={() => tog_list('approve')}
+                                            className="btn btn-success mx-2"
+                                        >
+                                            Approve
+                                        </Link>
+                                    </div>
                                 </div>
                             </CardBody>
                         </Card>

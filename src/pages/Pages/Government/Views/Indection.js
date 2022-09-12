@@ -1,23 +1,9 @@
 
 import { useState } from 'react';
+import { Link } from 'react-router-dom'
 // ...
-
 function Indection({ user, practices, error, showEditFacility, idx }) {
-    const base64 = ''
-    const [imgSix, setImgSix] = useState('');
-    const [selectedImage, setSelectedImage] = useState('');
    
-    // let text = "";
-    // const today = new Date();
-    // const someday = new Date();
-    // someday.setFullYear(2100, 0, 14);
-
-    // if (someday > today) {
-    //     text = "Today is before January 14, 2100.";
-    // } else {
-    //     text = "Today is after January 14, 2100.";
-    // }
-
     return (
         <>
             <div className="row">
@@ -39,7 +25,7 @@ function Indection({ user, practices, error, showEditFacility, idx }) {
                             </div>
                         </div>
                         <div className="card-body pt-0">
-                           
+
                             {practices !== null ? <ul className="list-group list-group-flush border-dashed">
                                 <li className="list-group-item ps-0">
                                     <div className="row align-items-center g-3">
@@ -56,11 +42,13 @@ function Indection({ user, practices, error, showEditFacility, idx }) {
                                             <a href="#" className="text-reset fs-14 mb-0">{user.firstName} {user.surname} <br /> {user.email}</a>
                                         </div>
                                         <div className="col-sm-auto">
-
-                                            <div className="hstack gap-3 flex-wrap">
-                                                {practices.isApproved === true ? ' ' : <a href="#" className="link-success fs-15" ><i className="ri-edit-2-line" onClick={() => showEditFacility()}></i></a>
-                                                }                                                            <a href="#"><i className="ri-download-2-line fs-17 lh-1 align-middle"></i></a>
-                                                <i className="ri-checkbox-circle-line align-middle text-success"></i>{practices.status}</div>
+                                            <div className="col-sm-auto">
+                                                <div className="hstack gap-3 flex-wrap">
+                                                    {practices.isApprovedByAdmin === true ? ' ' : <a href="#" className="link-success fs-15" ><i className="ri-edit-2-line" onClick={() => showEditFacility()}></i></a>
+                                                    }
+                                                    <Link to={`/indexing-dashboard/indexing/${user.id}`} href="#"><i className="ri-eye-2-line fs-17 lh-1 align-middle"></i></Link>
+                                                    <i className="ri-checkbox-circle-line align-middle text-success"></i>{practices.status}</div>
+                                            </div>
 
                                         </div>
                                     </div>

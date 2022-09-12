@@ -49,6 +49,7 @@ function Facility() {
         try {
             setLoading(true);
             const rs = await request(url, 'GET', true);
+            console.log(rs);
             isRenderSearch.current.style.display = 'none';
             isRenderRef.current.style.display = '';
             setPractices(rs.data);

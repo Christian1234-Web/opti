@@ -49,14 +49,12 @@ function Optician() {
 
 
     const fetchOpticians = useCallback(async (page) => {
-
         const p = page || 1;
         const url = `opticians?limit=5&page=${p}`;
-        // console.log(url);
         try {
             setLoading(true);
             const rs = await request(url, 'GET', true);
-            // console.log(rs);
+            console.log(rs);
             isRenderSearch.current.style.display = 'none';
             isRenderRef.current.style.display = '';
             setOpticians(rs.data);
@@ -72,7 +70,6 @@ function Optician() {
                 handleError();
             }
             console.log(err);
-
         }
     }, [rowsPerPage])
 
@@ -82,7 +79,7 @@ function Optician() {
         try {
             const url = `search/opticians`;
             const rs = await request(url, 'POST', true, data);
-            // console.log(rs);
+            console.log(rs);
             setSearchArray(rs.data.optician);
             setArrayLength(rs.data.optician.length)
             isRenderRef.current.style.display = 'none';
@@ -111,15 +108,15 @@ function Optician() {
         if (opticians.length > 0) {
             return (
                 <tr key={i}>
-                    <th scope="row"><Link to="#" className="fw-medium">{e.user.optician.id}</Link></th>
+                    <th scope="row"><Link to="#" className="fw-medium">{e.user.id}</Link></th>
                     <td>{e.user.firstName} {e.user.surname}</td>
-                    <td>{new Date(e.user.optician.createdAt).toDateString()}</td>
+                    <td>{new Date(e.createdAt).toDateString()}</td>
                     <td>$2,300</td>
-                    <td>{e.user.optician.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{e.user.optician.status}</span></span> :
-                        <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.user.optician.status}</span></span>
+                    <td>{e.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{e.status}</span></span> :
+                        <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                     }
                     </td>
-                    <td>{e.user.optician.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
                     <td>
                         <div className={e.user.id === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
                             <Link to={`/search-dashboard/view/${`optician`}/${e.user.id}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>

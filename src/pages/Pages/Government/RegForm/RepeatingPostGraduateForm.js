@@ -48,7 +48,7 @@ const RepeatingPostGraduateForm = (props) => {
         props.setHod_post_graduate('');
         props.setFrom_post_graduate('');
         props.setTo_post_graduate('');
-        props.switchPostGraduateBtn(false);
+        props.setSwitchPostgraduateBtn(false);
     }
 
     const updatePostGraduate = async () => {

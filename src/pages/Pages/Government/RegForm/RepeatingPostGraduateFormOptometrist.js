@@ -25,7 +25,7 @@ const RepeatingPostGraduateFormOptometrist = (props) => {
         props.setTo_post_graduate('');
 
     }
-    const newPostGraduateHttp = () => {
+    const newPostGraduateHttp = async () => {
         const data = {
             institutionName: props.name_post_graduate, supervisorName: props.hod_post_graduate, startDate: new Date(props.from_post_graduate).toUTCString(),
             endDate: new Date(props.to_post_graduate).toUTCString(), opticianId: props.oneOptometrist.id
@@ -34,10 +34,11 @@ const RepeatingPostGraduateFormOptometrist = (props) => {
         if (props.name_post_graduate === '') {
             return
         }
+        console.log(data);
         try {
             const url = `certifications/create?senderid=${props.userId}`;
-            const rs = request(url, 'POST', true, data);
-            // console.log(rs);
+            const rs = await request(url, 'POST', true, data);
+            console.log(rs);
             props.refreshUpdate();
         }
         catch (err) {
@@ -50,7 +51,7 @@ const RepeatingPostGraduateFormOptometrist = (props) => {
         props.setHod_post_graduate('');
         props.setFrom_post_graduate('');
         props.setTo_post_graduate('');
-        props.switchPostGraduateBtn(false);
+        props.setSwitchPostgraduateBtn(false);
     }
 
     const updatePostGraduate = async () => {

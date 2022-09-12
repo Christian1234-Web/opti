@@ -1,4 +1,4 @@
-import React, { useState, useContext, Fragment } from 'react'
+import React, { useState, useContext, Fragment, useCallback, useEffect } from 'react'
 import { request } from '../../../../services/utilities';
 import { Store } from '../../../../services/store';
 import Flatpickr from "react-flatpickr";
@@ -12,6 +12,7 @@ import FileIcon from "../../../../assets/images/file-img.png";
 // ** Third Party Imports
 import { useDropzone } from 'react-dropzone'
 import { FileText, X, DownloadCloud } from 'react-feather'
+import { useHistory } from 'react-router-dom';
 
 // import { FileText } from 'react-feather'
 
@@ -26,6 +27,7 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
     let [indexing_approval, setIndexing_approval] = store.indexing_approval;
     const [read_only_indexing] = store.read_only_indexing;
     const [count, setCount] = useState(0);
+    const history = useHistory();
     const [activeArrowTab, setactiveArrowTab] = useState(4);
     const [passedarrowSteps, setPassedarrowSteps] = useState([1]);
 
@@ -36,6 +38,7 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
     const arr = [];
     const [files, setFiles] = useState([]);
     const [allFiles, setAllFiles] = useState([])
+    const [documents, setDocuments] = useState([]);
 
 
 
@@ -112,7 +115,8 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
 
     const { getRootProps, getInputProps } = useDropzone({
         onDrop: acceptedFiles => {
-            setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))])
+            documents.push(...acceptedFiles.map(file => Object.assign(file)))
+            setFiles([...files, ...acceptedFiles.map(file => Object.assign(file))]);
         }
     })
 
@@ -126,10 +130,13 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
 
     const uploadedFiles = () => {
         setLoading(true);
-        let count = 0
+        let count = 0;
+        const filteredD = documents.filter(i => !i.id)
+        const files_ = documents.length > 1 ? filteredD : files;
         const formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-            let file = files[i];
+        for (let i = 0; i < files_.length; i++) {
+            let file = files_[i];
+            // count++
             formData.append("file", file);
             formData.append("upload_preset", "geekyimages");
             fetch(`https://api.cloudinary.com/v1_1/doxlmaiuh/image/upload`, {
@@ -140,11 +147,12 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
                     return response.json();
                 })
                 .then((data) => {
-                    let dataFile = { name: data.original_filename, file: data.secure_url }
-                    allFiles.push(dataFile);
+                    let dataFile = { name: data.original_filename, file: data.secure_url };
+                    if (dataFile?.name !== null) {
+                        allFiles.push(dataFile);
+                    }
                     count++
-                    if (count === files.length) {
-                        // console.log(count);
+                    if (count === files_.length) {
                         setLoading(false);
                         return MySwal.fire({
                             title: 'Good job!',
@@ -155,12 +163,34 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
                         })
                     }
                 });
+
         }
     }
-    const handleRemoveFile = file => {
-        const uploadedFiles = files
-        const filtered = uploadedFiles.filter(i => i.name !== file.name)
-        setFiles([...filtered])
+    const handleRemoveFile = async file => {
+        if (window.confirm('are you sure')) {
+            if (!file.id) {
+                const filteredF = files.filter(i => i.name !== file.name)
+                const filteredD = documents.filter(i => i.name !== file.name)
+                setFiles([...filteredF]);
+                setDocuments([...filteredD]);
+            } else {
+                try {
+                    setLoading(true);
+                    const filteredD = documents.filter(i => i.name !== file.name);
+                    const url = `documents/delete/${file.id}`;
+                    const rs = await request(url, 'DELETE', true);
+                    if (rs.success === true) {
+                        setDocuments([...filteredD]);
+                    }
+                    setLoading(false);
+                } catch (err) {
+                    setLoading(false);
+                    console.log(err);
+                }
+
+            }
+
+        }
     }
 
     const renderFileSize = size => {
@@ -170,7 +200,20 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
             return `${(Math.round(size / 100) / 10).toFixed(1)} kb`
         }
     }
-
+    const DocumentList = documents.map((file, index) => (
+        <ListGroupItem key={`${file.name}-${index}`} className='d-flex align-items-center justify-content-between'>
+            <div className='file-details d-flex align-items-center'>
+                <div className='file-preview me-1'> <FileText size='28' /></div>
+                <div>
+                    <p className='file-name mb-0'>{file.name}</p>
+                    {/* <p className='file-size mb-0'>{renderFileSize(file.size)}</p> */}
+                </div>
+            </div>
+            <Button color='danger' outline size='sm' className='btn-icon' onClick={() => handleRemoveFile(file)}>
+                <X size={14} />
+            </Button>
+        </ListGroupItem>
+    ));
     const fileList = files.map((file, index) => (
         <ListGroupItem key={`${file.name}-${index}`} className='d-flex align-items-center justify-content-between'>
             <div className='file-details d-flex align-items-center'>
@@ -204,9 +247,11 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
             setLoading(true);
             const url = `indexings/create?senderid=${idx}`;
             const rs = await request(url, 'POST', true, data);
+            setFiles([]);
             setLoading(false);
-            handleSuccess();
-            existPage();
+            history.push(`/indexing-dashboard/indexing/${rs?.data?.userId}`);
+            // handleSuccess();
+            // existPage();
         }
         catch (err) {
             setLoading(false);
@@ -228,7 +273,6 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
     }
     const submitExistIndexing = async () => {
         const id_sign_two = document.getElementById('id_sign_two');
-        // console.log(allFiles)
         if (id_sign_two.checked === false) {
             return is_signError();
         }
@@ -236,13 +280,14 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
             dateAdmitted: dateCommenced, sponsorAddress: cacRegNum, institutionCode: email, nokName: nameOfRegPractitionerInCharge,
             institutionAdress: address, matricNum: phone, nokAddress: optometricRegNum, sponsorName: name, userId: idx, documents: allFiles, status: "Continue"
         }
-        // console.log(data, allFiles)
         try {
             setLoading(true);
             const url = `indexings/create?senderid=${idx}`;
             const rs = await request(url, 'POST', true, data);
             setLoading(false);
-            handleSuccess();
+            history.push(`/indexing-dashboard/indexing/${rs?.data?.userId}`);
+            setFiles([]);
+            // handleSuccess();
             // existPage();
         }
         catch (err) {
@@ -272,17 +317,30 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
             dateAdmitted: dateCommenced, sponsorAddress: cacRegNum, institutionCode: email, optometricRegNum, nokName: nameOfRegPractitionerInCharge,
             institutionAdress: address, matricNum: phone, nokAddress: optometricRegNum, sponsorName: name, userId: idx, status: "Pending"
         }
+        const docu = { documents: allFiles };
 
         try {
             setLoading(true);
-            const url = `practices/update/${practice.id}?senderid=${idx}`;
+            const url = `indexings/update/${practice.id}?senderid=${idx}`;
             const rs = await request(url, 'PATCH', true, data);
+            const fs = await request(`documents/upload?name=indexing&id=${practice?.id}`, 'POST', true, docu);
             setLoading(false);
-            handleUpdate();
-            existPage();
+            setFiles([]);
+            // handleUpdate();
+            // existPage();
         }
         catch (err) {
             setLoading(false);
+
+            if (err.message === 'you need approval to update records, kindly contact support') {
+                return MySwal.fire({
+                    title: 'Opps!',
+                    text: 'You need approval to update records, kindly contact support!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 2800
+                });
+            }
             handleError();
             console.log(err);
         }
@@ -296,23 +354,49 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
             dateAdmitted: dateCommenced, sponsorAddress: cacRegNum, institutionCode: email, optometricRegNum, nokName: nameOfRegPractitionerInCharge,
             institutionAdress: address, matricNum: phone, nokAddress: optometricRegNum, sponsorName: name, userId: idx, status: "Continue"
         }
-
+        const docu = { documents: allFiles };
         try {
             setLoading(true);
-            const url = `practices/update/${practice.id}?senderid=${idx}`;
+            const url = `indexings/update/${practice.id}?senderid=${idx}`;
             const rs = await request(url, 'PATCH', true, data);
+            const fs = await request(`documents/upload?name=indexing&id=${practice?.id}`, 'POST', true, docu);
             setLoading(false);
+            setFiles([]);
             handleUpdate();
             existPage();
         }
         catch (err) {
             setLoading(false);
+            if (err.message === 'you need approval to update records, kindly contact support') {
+                return MySwal.fire({
+                    title: 'Opps!',
+                    text: 'You need approval to update records, kindly contact support!',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 2800
+                });
+            }
             handleError();
             console.log(err);
         }
     }
 
+    const refreshUpdate = useCallback(async () => {
+        try {
+            setLoading(true);
+            const url = `indexings/${practice?.id}`;
+            const rs = await request(url, 'GET', true);
+            setDocuments(rs.data.documents);
+            setLoading(false);
+        } catch (err) {
+            setLoading(false);
+            console.log(err);
+        }
+    }, [practice?.id]);
 
+    useEffect(() => {
+        refreshUpdate();
+    }, [refreshUpdate]);
     return (
         <>
             <Card>
@@ -521,18 +605,19 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
                                                         </div>
                                                         <div className="col-xxl-8 col-md-8">
                                                             <div>
-                                                                <label htmlFor="basiInput" className="form-label">Address of Training Institution</label>
+                                                                <label htmlFor="validationDefaultUsername" className="form-label">Address of Training Institution</label>
                                                                 <input type="text"
                                                                     value={practice !== null ? address : address}
                                                                     onChange={(e) => setAddress(e.target.value)}
                                                                     readOnly={read_only_indexing} style={{ background: '#fff' }}
-                                                                    className="form-control" id="basiInput" placeholder='Enter training address' />
+                                                                    className="form-control" id="validationDefaultUsername" placeholder='Enter training address'
+                                                                    required
+                                                                />
                                                             </div>
                                                         </div>
                                                         <div className="col-xxl-4 col-md-4">
                                                             <div>
                                                                 <label htmlFor="exampleInputdate" className="form-label">Date Admitted Into The Training Institution</label>
-
                                                                 <Flatpickr
                                                                     className="form-control"
                                                                     options={{
@@ -641,7 +726,7 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
                                     <div className="col-lg-12 col-md-6">
                                         <div>
                                             <div className="form-check">
-                                                <input className="form-check-input" type="checkbox" id="id_sign_one" disabled={read_only_indexing} />
+                                                <input className="form-check-input" type="checkbox" id="id_sign_one" />
                                                 <label className="form-check-label" htmlFor="gridCheck">
                                                     I HEREBY DECLARE THAT THE INFORMATION GIVEN IN THIS APPLICATION IS CORRECT TO THE BEST OF MY KNOWLEDGE .
                                                 </label>
@@ -650,7 +735,7 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
                                     </div>
                                     <div className="d-flex align-items-start gap-3 mt-4">
                                         <div className="text-end">
-                                            <button type="button" onClick={() => existPage()} className="btn btn-danger" >Cancel</button>
+                                            <button type="button" onClick={() => existPage()} className="btn btn-primary" >Go Back</button>
                                         </div>
                                         <button
                                             type="button"
@@ -698,13 +783,14 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
                                                         </ol>
                                                     </div>
                                                 </div>
-                                                {files.length ? (
+                                                {files.length || documents.length ? (
                                                     <Fragment>
-                                                        <ListGroup className='my-2'>{fileList}</ListGroup>
+                                                        <ListGroup className='my-2'>{documents?.length >= 1 ? DocumentList : fileList}</ListGroup>
                                                         <div className='d-flex justify-content-end'>
-                                                            <Button className='me-1' color='danger' outline onClick={handleRemoveAllFiles}>
-                                                                Remove All
-                                                            </Button>
+                                                            <div></div>
+                                                            {/* <Button className='me-1' color='danger' outline onClick={handleRemoveAllFiles}>
+                                                        Remove All
+                                                    </Button> */}
                                                             <Button color='primary' onClick={() => uploadedFiles()}>Upload Files</Button>
                                                         </div>
                                                     </Fragment>
@@ -714,7 +800,7 @@ function PracticeRegIndection({ existPage, practice, idx, name, setName, type, s
                                                 <div className="col-lg-12 col-md-6">
                                                     <div>
                                                         <div className="form-check">
-                                                            <input className="form-check-input" type="checkbox" id="id_sign_two" disabled={read_only_indexing} />
+                                                            <input className="form-check-input" type="checkbox" id="id_sign_two" />
                                                             <label className="form-check-label" htmlFor="gridCheck">
                                                                 I HEREBY DECLARE THAT THE INFORMATION GIVEN IN THIS APPLICATION IS CORRECT TO THE BEST OF MY KNOWLEDGE .
                                                             </label>

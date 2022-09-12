@@ -67,10 +67,14 @@ const EmailToolbar = ({ messages, userId }) => {
                         <Row className="align-items-center mt-3">
                             <Col>
                                 <ul className="nav nav-tabs nav-tabs-custom nav-success gap-1 text-center border-bottom-0" role="tablist">
-                                    <NavItem>
+                                    <NavItem className='d-flex justify-content-between w-100'>
                                         <NavLink className="fw-semibold active" href="#">
                                             <i className="ri-inbox-fill align-bottom d-inline-block"></i>
                                             <span className="ms-1 d-none d-sm-inline-block">Primary</span>
+                                        </NavLink>
+                                        <NavLink className="fw-semibold active" href="#">
+                                            <i className="ri-inbox-fill align-bottom d-inline-block"></i>
+                                            <span className="ms-1 d-none d-sm-inline-block">Messages</span>
                                         </NavLink>
                                     </NavItem>
                                 </ul>
@@ -160,7 +164,7 @@ const EmailToolbar = ({ messages, userId }) => {
                                                             </div>
                                                         </div>
                                                     </a>
-                                                </div>  
+                                                </div>
 
                                                 <UncontrolledCollapse toggler={`email-collapse${i}`} className="accordion-collapse collapse">
                                                     <div className="accordion-body text-body px-0">
