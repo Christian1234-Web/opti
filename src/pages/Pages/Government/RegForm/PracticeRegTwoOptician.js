@@ -400,7 +400,7 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         const id_sign = document.getElementById('id_sign');
         const data = {
-            userId: user.id, meansOfIdentification: id_means, identificationNumber: id_no, academics: academic_formOptician,
+            userId: user.id, meansOfIdentification: id_means, identificationNumber: id_no, academics: academic_formOptician,emergencyName: emergency_name, emergencyAddress: emergency_address,
             certifications: post_graduateOptician, referees: referenceOptician, status: 'Pending', documents: allFiles
         }
         if (id_sign.checked === false) {
@@ -421,7 +421,7 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
             setAcademic_formOptician([]);
             setReferenceOptician([]);
             setPost_graduateOptician([]);
-            existPageOptician();
+            // existPageOptician();
         }
         catch (err) {
             setLoading(false);
@@ -445,7 +445,7 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         const id_sign = document.getElementById('id_sign');
         const data = {
-            userId: user.id, meansOfIdentification: id_means, identificationNumber: id_no, academics: academic_formOptician,
+            userId: user.id, meansOfIdentification: id_means, identificationNumber: id_no, academics: academic_formOptician, emergencyName: emergency_name, emergencyAddress: emergency_address,
             certifications: post_graduateOptician, referees: referenceOptician, status: 'Continue', documents: allFiles
         }
         if (id_sign.checked === false) {
@@ -464,7 +464,7 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
             setEmergency_name(' ');
             setEmergency_address(' ');
             setIf_explain(' ');
-            existPageOptician();
+            // existPageOptician();
             // console.log(rs);
 
         }
@@ -491,7 +491,7 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         const id_sign = document.getElementById('id_sign');
         const data = {
-            userId: user.id, meansOfIdentification: id_means, identificationNumber: id_no, academics: academic_formOptician,
+            userId: user.id, meansOfIdentification: id_means, identificationNumber: id_no, academics: academic_formOptician,emergencyName: emergency_name, emergencyAddress: emergency_address,
             certifications: post_graduateOptician, referees: referenceOptician, status: 'Pending'
         }
         if (id_sign.checked === false) {
@@ -522,7 +522,7 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         const id_sign = document.getElementById('id_sign');
         const data = {
-            userId: user.id, meansOfIdentification: id_means, identificationNumber: id_no, academics: academic_formOptician,
+            userId: user.id, meansOfIdentification: id_means, identificationNumber: id_no, academics: academic_formOptician, emergencyName: emergency_name, emergencyAddress: emergency_address,
             certifications: post_graduateOptician, referees: referenceOptician, status: 'Continue'
         }
         if (id_sign.checked === false) {
@@ -605,7 +605,6 @@ function PracticeRegTwoOptician({ opticians, existPageOptician, oneOptician, id_
 
     const fetchUserDetails = useCallback(async () => {
         setFirst_name(user.firstName);
-        console.log(user);
         setMiddle_name(user.otherNames);
         setLast_name(user.surname);
         setUser_email(user.email);

@@ -24,10 +24,10 @@ const FullRegReference = (props) => {
 
     const newReferenceHttp = () => {
 
-        const data = {
+        const data = [{
             refereeName: props.name_referee, refereeAddress: props.address_referee, refereeOccupation: props.occupation_referee,
             refereePhone: props.phoneE_referee, opticianId: props.oneOptician.id
-        }
+        }]
         if (props.name_referee === '') {
             return
         }

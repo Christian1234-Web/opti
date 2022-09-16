@@ -29,8 +29,13 @@ const MailInbox = ({ user }) => {
     const [show, setShow] = useState(false);
     const [body, setBody] = useState('');
     const [subject, setSubject] = useState('');
+    const [type, setType] = useState(null);
+    const [selectedType, setSelectedType] = useState(null);
+
+    const [id, setId] = useState(null);
 
     const toggle = () => {
+        console.log(user);
         if (modal) {
             setModal(false);
         } else {
@@ -38,8 +43,50 @@ const MailInbox = ({ user }) => {
         }
     };
 
+    const fetchPractice = (e) => {
+        setSelectedType(e);
+
+        if (e === 'practices') {
+            setType(user.practices);
+        }
+        if (e === 'internship') {
+            if (user.internship !== null) {
+                let x = new Array(user.internship);
+                setType(x);
+            }
+        }
+        if (e === 'training') {
+            if (user.training !== null) {
+                let x = new Array(user.training);
+                setType(x);
+            }
+        }
+        if (e === 'optician') {
+            if (user.optician !== null) {
+                let x = new Array(user.optician);
+                setType(x);
+            }
+        }
+        if (e === 'optometrist') {
+            if (user.optometrist !== null) {
+                let x = new Array(user.optometrist);
+                setType(x);
+            }
+        }
+        if (e === 'indexing') {
+            if (user.indexing !== null) {
+                let x = new Array(user.indexing);
+                setType(x);
+            }
+
+        }
+    }
     const createTicket = async () => {
-        const data = { subject, body };
+        const data = {
+            subject, body, practiceId: selectedType === 'practices' ? id : null, opticianId: selectedType === 'optician' ? id : null,
+            optometristId: selectedType === 'optometrist' ? id : null, trainingId: selectedType === 'training' ? id : null,
+            internshipId: selectedType === 'internship' ? id : null, indexingId: selectedType === 'indexing' ? id : null
+        };
         try {
             const url = `tickets/create?senderId=${user?.id}`
             const rs = await request(url, 'POST', true, data);
@@ -74,25 +121,25 @@ const MailInbox = ({ user }) => {
                             <div className="col-xl-6">
                                 <Label htmlFor="phonenumberInput" className="form-label">Practice Type
                                 </Label>
-                                <select className="form-select mb-3">
+                                <select className="form-select mb-3" onChange={e => fetchPractice(e.target.value)}>
                                     <option >Select Practice Type </option>
-                                    <option value='Male'>Facility</option>
-                                    <option value="Female">Optician</option>
-                                    <option value="Female">Optometrist</option>
-                                    <option value="Female">Internship</option>
-                                    <option value="Female">Training</option>
+                                    <option value='practices'>Facility</option>
+                                    <option value="optician">Optician</option>
+                                    <option value="optometrist">Optometrist</option>
+                                    <option value="internship">Internship</option>
+                                    <option value="training">Training</option>
                                 </select>
                             </div>
                             <div className="col-xl-6">
-                                <Label htmlFor="phonenumberInput" className="form-label">Practice Type
-                                </Label>
-                                <select className="form-select mb-3">
-                                    <option >Select Practice Type </option>
-                                    <option value='Male'>Facility</option>
-                                    <option value="Female">Optician</option>
-                                    <option value="Female">Optometrist</option>
-                                    <option value="Female">Internship</option>
-                                    <option value="Female">Training</option>
+                                <Label htmlFor="phonenumberInput" className="form-label">Practice </Label>
+                                <select className="form-select mb-3" onChange={e => setId(parseInt(e.target.value))}>
+                                    <option >Select Practice  </option>
+                                    {type?.map(e => {
+                                        return (
+                                            <option key={e.id} value={e.id}>{e.name + ' --- ' + e.id || user.firstName + user.surname + ' --- ' + e.id}</option>
+                                        )
+                                    })}
+
                                 </select>
                             </div>
                         </div>

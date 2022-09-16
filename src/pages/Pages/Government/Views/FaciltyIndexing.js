@@ -41,7 +41,8 @@ const FacilityIndexing = () => {
     }
     const makePayment = async () => {
         const user = await storage.getItem(USER_COOKIE);
-        const data = { userId: user.id, planId: 2 }
+        const data = { userId: user.id, planId: idDetails?.planId };
+        console.log(data);
         try {
             const rs = await request('payment/remita/initialize', 'POST', false, data);
             window.location.href = rs.url;
@@ -209,7 +210,7 @@ const FacilityIndexing = () => {
                                         <p className="text-muted mb-2 text-uppercase fw-semibold">
                                             Approve By Admin
                                         </p>
-                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">No</span> :
+                                        {idDetails === null ? <span className="badge badge-soft-danger fs-11">--</span> :
                                             <>
                                                 {type.type === 'facility' ? idDetails?.isApprovedByAdmin === true ? <span className="badge badge-soft-success fs-11">Approved</span> :
                                                     idDetails?.isApprovedByHOD === null ? <span className="badge badge-soft-primary fs-11">Awaiting Approval</span> :

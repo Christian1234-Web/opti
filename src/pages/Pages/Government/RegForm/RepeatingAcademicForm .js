@@ -15,7 +15,6 @@ const RepeatingAcademicForm = ({ academic_form, addAcademic, academic_index, nam
 
     // ** State
     const newAcademic = () => {
-        // console.log(oneOptician)
         const academic_formData = { institutionName: name_academic, startDate: new Date(from_academic).toUTCString(), endDate: new Date(to_academic).toUTCString(), grade: grade_academic }
         if (name_academic !== '') {
             addAcademic(academic_formData);
@@ -26,10 +25,10 @@ const RepeatingAcademicForm = ({ academic_form, addAcademic, academic_index, nam
         setTo_academic('');
     }
     const newAcademicHttp = () => {
-        const data = {
+        const data = [{
             institutionName: name_academic, startDate: new Date(from_academic).toUTCString(), endDate: new Date(to_academic).toUTCString(),
             grade: grade_academic, opticianId: oneOptician.id
-        }
+        }]
         if (name_academic === '') {
             return
         }

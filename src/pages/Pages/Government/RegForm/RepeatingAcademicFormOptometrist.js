@@ -30,10 +30,10 @@ const RepeatingAcademicFormOptometrist = ({ academic_form, addAcademic, academic
     }
     const newAcademicHttp = async () => {
         // console.log('ll')
-        const data = {
+        const data = [{
             institutionName: name_academic, startDate: new Date(from_academic).toUTCString(), endDate: new Date(to_academic).toUTCString(),
             grade: grade_academic, optometristId: oneOptometrist.id
-        }
+        }]
         if (name_academic === '') {
             return
         }

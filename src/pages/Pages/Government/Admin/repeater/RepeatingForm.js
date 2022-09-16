@@ -14,11 +14,13 @@ const RepeatingForm = ({ boardArr }) => {
   // ** State
   const [count, setCount] = useState(1)
   const [number, setNumber] = useState('');
+  const [type, setType] = useState('');
+
 
   const increaseCount = () => {
     let item = boardArr.find(x => x.number === number);
     if (!item && number !== '') {
-      let x = { number }
+      let x = { number: type + number }
       boardArr.push(x);
       setCount(count + 1);
     }
@@ -45,10 +47,10 @@ const RepeatingForm = ({ boardArr }) => {
                 <Col md={5}>
                   <div className="mb-3">
                     <Label htmlFor="firstNameinput" className="form-label">Select Practice</Label>
-                    <select id="ForminputState" className="form-select" data-choices data-choices-sorting="true" >
+                    <select id="ForminputState" className="form-select" onChange={e => setType(e.target.value)} data-choices data-choices-sorting="true" >
                       <option>Choose...</option>
-                      <option>Optician</option>
-                      <option>Optometrist</option>
+                      <option value={'dop/'}>Optician</option>
+                      <option value={'odorbn/'}>Optometrist</option>
 
                     </select>
                   </div>

@@ -18,7 +18,8 @@ const MailInbox = () => {
         try {
             const url = `tickets/?id=&ticketId=&userId=&status`;
             const rs = await request(url, 'GET', true);
-            setMessages(rs.data);
+            let msg = rs.data.filter(x => x.isAdmin === false && x.isClosed === false);
+            setMessages(msg);
         } catch (err) {
             console.log(err)
         }
@@ -36,7 +37,7 @@ const MailInbox = () => {
                     </MetaTags> */}
                     <div className="email-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
                         <EmailSidebar messages={messages} userId={user?.id} fetchTickets={fetchTickets} />
-                        <EmailToolbar messages={messages} userId={user?.id} />
+                        <EmailToolbar fetchTickets={fetchTickets} messages={messages} userId={user?.id} />
                     </div>
                 </Container>
             </div>

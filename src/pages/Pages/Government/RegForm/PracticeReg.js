@@ -34,6 +34,7 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
     const [files, setFiles] = useState([]);
     const [imgSix, setImgSix] = useState('');
     const [, setDocArr] = useState([]);
+    const [practiceType, setPracticeType] = useState([]);
     const [hide, setHide] = useState('none');
     const docArr = [];
     const [switchDirectorBtn, setSwitchDirectorBtn] = useState(false);
@@ -43,6 +44,8 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
     const [name_director, setName_director] = useState('');
     const [address_director, setAddress_director] = useState('');
     const [name_facility, setName_facility] = useState('');
+    const [planId, setPlanId] = useState(null);
+
     const [allFiles, setAllFiles] = useState([])
     const [documents, setDocuments] = useState([]);
 
@@ -259,9 +262,21 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
         }
     }, [practice?.id, setDirector, setFacilty]);
 
+    const fetchTypeOfPractice = useCallback(async () => {
+        try {
+            const url = `plan/find/slug?slug=facility`
+            const rs = await request(url, 'GET', true);
+            console.log(rs);
+            setPracticeType(rs.data);
+        } catch (err) {
+            console.log(err);
+        }
+    }, []);
+
     useEffect(() => {
         refreshUpdate();
-    }, [refreshUpdate]);
+        fetchTypeOfPractice();
+    }, [refreshUpdate, fetchTypeOfPractice]);
 
 
     const createPractice = async () => {
@@ -275,7 +290,7 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
         const data = {
             dateCommenced, isAttachedToGMP: isAttachedToGHP, state: selected_state, lga: selected_lga, email,
             qualificationOfPractitionerInCharge, cacRegNum, optometricRegNum, nameOfRegPractitionerInCharge, address, documents: allFiles,
-            phone, type, name, directors: director, facilities: facility, userId: idx, status: "Pending"
+            phone, type, name, directors: director, facilities: facility, userId: idx, status: "Pending", planId
         }
         try {
             setLoading(true);
@@ -317,7 +332,7 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
         const data = {
             dateCommenced, isAttachedToGMP: isAttachedToGHP, state: selected_state, lga: selected_lga, email,
             qualificationOfPractitionerInCharge, cacRegNum, optometricRegNum, nameOfRegPractitionerInCharge, address, documents: allFiles,
-            phone, type, name, directors: director, facilities: facility, userId: idx, status: "Continue"
+            phone, type, name, directors: director, facilities: facility, userId: idx, status: "Continue", planId
         }
         try {
             setLoading(true);
@@ -357,7 +372,7 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
             return is_signError();
         }
         const data = {
-            dateCommenced, isAttachedToGMP: isAttachedToGHP, state: selected_state, lga: selected_lga, email,
+            dateCommenced, isAttachedToGMP: isAttachedToGHP, state: selected_state, lga: selected_lga, email, planId,
             qualificationOfPractitionerInCharge, cacRegNum, optometricRegNum, nameOfRegPractitionerInCharge, address,
             phone, type, name, directors: director, facilities: facility, userId: idx, status: "Pending"
         }
@@ -397,7 +412,7 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
             return is_signError();
         }
         const data = {
-            dateCommenced, isAttachedToGMP: isAttachedToGHP, state: selected_state, lga: selected_lga, email,
+            dateCommenced, isAttachedToGMP: isAttachedToGHP, state: selected_state, lga: selected_lga, email, planId,
             qualificationOfPractitionerInCharge, cacRegNum, optometricRegNum, nameOfRegPractitionerInCharge, address,
             phone, type, name, directors: director, facilities: facility, userId: idx, status: "Continue"
         }
@@ -571,21 +586,21 @@ function PracticeReg({ existPage, practice, idx, name, setName, type, setType, a
 
                                                             /> : <div>
                                                                 <select className="form-select mb-3" aria-label="Default select example" onChange={(e) => {
-                                                                    setType(e.target.value);
-                                                                    if (e.target.value === 'Optometry Clinic') {
+                                                                    let item = practiceType[e.target.value];
+                                                                    setType(item.name);
+                                                                    setPlanId(parseInt(item.id));
+                                                                    if (item.name === 'optometry-clinic') {
                                                                         setHide('');
                                                                     } else {
                                                                         setHide('none');
                                                                     }
                                                                 }}>
-                                                                    <option selected="">Select type of practice </option>
-                                                                    <option value="Foreign NGO">Foreign NGO</option>
-                                                                    <option value="Local NGO">Local NGO</option>
-                                                                    <option value="Foreign Optical Dealer">Foreign Optical Dealer</option>
-                                                                    <option value="Local Optical Dealer">Local Optical Dealer</option>
-                                                                    <option value="Lens Surfacing Lab">Lens Surfacing Lab</option>
-                                                                    <option value="Optometry Clinic">Optometry Clinic</option>
-
+                                                                    <option selected="" className='text-capitalize'>Select type of practice </option>
+                                                                    {practiceType.map((e, i) => {
+                                                                        return (
+                                                                            <option key={e.id} value={i}>{e.name}</option>
+                                                                        )
+                                                                    })}
                                                                 </select>
                                                                 <input type="text"
                                                                     className="form-control" id="basiInput" placeholder='Enter'

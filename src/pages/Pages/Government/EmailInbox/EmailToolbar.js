@@ -35,10 +35,10 @@ const EmailToolbar = ({ messages, userId }) => {
     };
 
     const showMessage = async id => {
+        setShow(false);
         try {
-            const url = `tickets/?id=&ticketId=${id}&userId=${userId}`;
+            const url = `tickets/?id=&ticketId=${id}`;
             const rs = await request(url, 'GET', true);
-            // console.log(rs);
             setMessage(rs.data);
             setTicketId(id);
             toggleRightCanvas();
@@ -52,10 +52,10 @@ const EmailToolbar = ({ messages, userId }) => {
         try {
             const url = `tickets/response?senderId=${userId}&ticketId=${ticketId}`;
             const rs = await request(url, 'POST', true, data);
-            // console.log(rs);
-            setShow(true);
             setResponse('');
+            showMessage(ticketId);
         } catch (err) {
+            setShow(true);
             console.log(err);
         }
     }
@@ -183,8 +183,8 @@ const EmailToolbar = ({ messages, userId }) => {
                         </SimpleBar>
                     </OffcanvasBody>
                     <div className="mt-auto p-4">
-                        {show ? <UncontrolledAlert color='success'>
-                            Message Sent
+                        {show ? <UncontrolledAlert color='danger'>
+                            Failed to send message please try again later!
                         </UncontrolledAlert> : ''}
                         <form className="mt-2">
                             <div>

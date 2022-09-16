@@ -70,7 +70,7 @@ const CommentToolbar = ({ messages, userId }) => {
                         <ul className="message-list">
                             {messages?.practices?.map((e, i) => {
                                 return (
-                                    <li className='unread' key={i}>
+                                    <li className='' key={i}>
                                         <div className="col-mail col-mail-1">
                                             {/* <div className="form-check checkbox-wrapper-mail fs-14">
                                                     <input className="form-check-input" type="checkbox" value="" id={item.forId} />

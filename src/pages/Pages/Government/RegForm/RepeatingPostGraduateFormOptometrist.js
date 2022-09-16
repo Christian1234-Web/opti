@@ -26,10 +26,10 @@ const RepeatingPostGraduateFormOptometrist = (props) => {
 
     }
     const newPostGraduateHttp = async () => {
-        const data = {
+        const data = [{
             institutionName: props.name_post_graduate, supervisorName: props.hod_post_graduate, startDate: new Date(props.from_post_graduate).toUTCString(),
             endDate: new Date(props.to_post_graduate).toUTCString(), opticianId: props.oneOptometrist.id
-        }
+        }]
 
         if (props.name_post_graduate === '') {
             return

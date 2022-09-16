@@ -405,7 +405,7 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         const id_sign = document.getElementById('id_sign');
         const data = {
-            userId: user.id, meansOfIdentification: id_meansOpto, identificationNumber: id_noOpto, academics: academic_formOptometrist,
+            userId: user.id, meansOfIdentification: id_meansOpto, identificationNumber: id_noOpto, academics: academic_formOptometrist,emergencyName: emergency_name, emergencyAddress: emergency_address,
             certifications: post_graduateOptometrist, referees: referenceOptometrist, status: 'Pending', documents: allFiles
         }
         if (id_sign.checked === false) {
@@ -450,7 +450,7 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         const id_sign = document.getElementById('id_sign');
         const data = {
-            userId: user.id, meansOfIdentification: id_meansOpto, identificationNumber: id_noOpto, academics: academic_formOptometrist,
+            userId: user.id, meansOfIdentification: id_meansOpto, identificationNumber: id_noOpto, academics: academic_formOptometrist,emergencyName: emergency_name, emergencyAddress: emergency_address,
             certifications: post_graduateOptometrist, referees: referenceOptometrist, status: 'Continue', documents: allFiles
         }
         if (id_sign.checked === false) {
@@ -497,7 +497,7 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         const id_sign = document.getElementById('id_sign');
         const data = {
-            userId: user.id, meansOfIdentification: id_meansOpto, identificationNumber: id_noOpto, academics: academic_formOptometrist,
+            userId: user.id, meansOfIdentification: id_meansOpto, identificationNumber: id_noOpto, academics: academic_formOptometrist,emergencyName: emergency_name, emergencyAddress: emergency_address,
             certifications: post_graduateOptometrist, referees: referenceOptometrist, status: 'Pending'
         }
         if (id_sign.checked === false) {
@@ -531,7 +531,7 @@ function PracticeRegTwoOptometrist({ optometrists, existPageOptometrist, idx, on
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         const id_sign = document.getElementById('id_sign');
         const data = {
-            userId: user.id, meansOfIdentification: id_meansOpto, identificationNumber: id_noOpto, academics: academic_formOptometrist,
+            userId: user.id, meansOfIdentification: id_meansOpto, identificationNumber: id_noOpto, academics: academic_formOptometrist,emergencyName: emergency_name, emergencyAddress: emergency_address,
             certifications: post_graduateOptometrist, referees: referenceOptometrist, status: 'Continue'
         }
         if (id_sign.checked === false) {

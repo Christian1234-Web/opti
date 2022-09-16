@@ -66,7 +66,7 @@ const CommentToolbar = ({ messages, userId }) => {
 
                     <SimpleBar className="message-list-content mx-n4 px-4 message-list-scroll">
                         <ul className="message-list">
-                            {messages?.length < 1 || messages?.training === null ? '' : <li className='unread'>
+                            {messages?.length < 1 || messages?.training === null ? '' : <li className=''>
                                 <div className="col-mail col-mail-1">
                                     {/* <div className="form-check checkbox-wrapper-mail fs-14">
                                                 <input className="form-check-input" type="checkbox" value="" id={item.forId} />
@@ -79,7 +79,7 @@ const CommentToolbar = ({ messages, userId }) => {
                                             fullSymbol="ri-star-fill text-warning "
                                         />
                                     </button>
-                                    <Link to="#" className="title text-capitalize">{messages?.training?.createdAt}</Link>
+                                    <Link to="#" className="title text-capitalize">{new Date(messages?.training?.createdAt).toDateString()}</Link>
                                 </div>
                                 <div className="col-mail col-mail-2" onClick={() => showMessage(messages?.training)}>
                                     <Link to="#" className="subject text-capitalize"> {<span className={"badge me-2 bg-"}></span>} <span className="teaser text-capitalize">{`Internship ID:`} {messages?.training?.id}</span>
@@ -88,7 +88,7 @@ const CommentToolbar = ({ messages, userId }) => {
                                 </div>
                             </li>}
 
-                            {messages?.length < 1 || messages?.optician === null ? '' : <li className='unread'>
+                            {messages?.length < 1 || messages?.optician === null ? '' : <li className=''>
                                 <div className="col-mail col-mail-1">
                                     {/* <div className="form-check checkbox-wrapper-mail fs-14">
                                                 <input className="form-check-input" type="checkbox" value="" id={item.forId} />
@@ -101,7 +101,7 @@ const CommentToolbar = ({ messages, userId }) => {
                                             fullSymbol="ri-star-fill text-warning "
                                         />
                                     </button>
-                                    <Link to="#" className="title text-capitalize">{messages?.optician?.createdAt}</Link>
+                                    <Link to="#" className="title text-capitalize">{new Date(messages?.optician?.createdAt).toDateString()}</Link>
                                 </div>
                                 <div className="col-mail col-mail-2" onClick={() => showMessage(messages?.optician)}>
                                     <Link to="#" className="subject text-capitalize"> {<span className={"badge me-2 bg-"}></span>} <span className="teaser text-capitalize">{`Optician ID:`} {messages?.optician?.id}</span>

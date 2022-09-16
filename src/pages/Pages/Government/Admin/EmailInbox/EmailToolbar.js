@@ -15,7 +15,7 @@ import { Store } from '../../../../../services/store';
 
 
 
-const EmailToolbar = ({ messages, userId }) => {
+const EmailToolbar = ({ messages, userId, fetchTickets }) => {
     const store = useContext(Store);
     const [username, setUsername] = store.username;
     const [isRight, setIsRight] = useState(false);
@@ -29,11 +29,12 @@ const EmailToolbar = ({ messages, userId }) => {
     };
 
     const showMessage = async id => {
+        setShow(false);
         try {
-            const url = `tickets/?id=&ticketId=${id}&userId=`;
+            const url = `tickets/?id=&ticketId=${id}`;
             const rs = await request(url, 'GET', true);
-            // console.log(rs);
             setMessage(rs.data);
+            console.log(rs.data);
             setTicketId(id);
             toggleRightCanvas();
         } catch (err) {
@@ -42,17 +43,51 @@ const EmailToolbar = ({ messages, userId }) => {
     }
 
     const sendResponse = async () => {
-        const data = { body: response };
+        const data = { body: response, isAdmin: true };
         try {
             const url = `tickets/response?senderId=${userId}&ticketId=${ticketId}`;
             const rs = await request(url, 'POST', true, data);
-            // console.log(rs);
-            setShow(true);
             setResponse('');
+            showMessage(ticketId);
         } catch (err) {
+            setShow(true);
             console.log(err);
         }
     }
+    const closeTicket = async () => {
+        const data = { ticketId };
+        try {
+            const url = `tickets/admin/close`;
+            const rs = await request(url, 'POST', true, data);
+            console.log(rs);
+            fetchTickets();
+        } catch (err) {
+            // setShow(true);
+            console.log(err);
+        }
+    }
+    const enableEdit = async () => {
+        const data = {
+            type: message[0]?.practiceId !== null ? 'practice' :
+                message[0]?.indexingId !== null ? 'indexing' : message[0]?.opticianId !== null ? 'optician' : message[0]?.trainingId !== null ? 'training' :
+                    message[0]?.internshipId !== null ? 'internship' : message[0]?.optometristId !== null ? 'optometrist' : '',
+            id: message[0]?.practiceId !== null ? message[0]?.practiceId : message[0]?.indexingId !== null ? message[0]?.indexingId :
+                message[0]?.opticianId !== null ? message[0]?.opticianId : message[0]?.trainingId !== null ?
+                    message[0]?.trainingId : message[0]?.internshipId !== null ? message[0]?.internshipId :
+                        message[0]?.optometristId !== null ? message[0]?.optometristId : ''
+        };
+        console.log(data);
+        try {
+            const url = `tickets/edit/enable`;
+            const rs = await request(url, 'POST', true, data);
+            // console.log(rs);
+            fetchTickets();
+        } catch (err) {
+            // setShow(true);
+            console.log(err);
+        }
+    }
+
     return (
         <React.Fragment>
             <div className="email-content">
@@ -77,29 +112,35 @@ const EmailToolbar = ({ messages, userId }) => {
 
                     <SimpleBar className="message-list-content mx-n4 px-4 message-list-scroll">
                         <ul className="message-list">
-                            {messages.map((item, key) => (
-                                <li className={item.unread ? "unread" : null} key={key}>
-                                    <div className="col-mail col-mail-1">
-                                        {/* <div className="form-check checkbox-wrapper-mail fs-14">
-                                                <input className="form-check-input" type="checkbox" value="" id={item.forId} />
-                                                <label className="form-check-label" htmlFor={item.forId}></label>
-                                            </div> */}
-                                        <button type="button" className="btn avatar-xs p-0 favourite-btn fs-15 active">
-                                            <Rating
-                                                stop={1}
-                                                emptySymbol="ri-star-fill text-muted"
-                                                fullSymbol="ri-star-fill text-warning "
-                                            />
-                                        </button>
-                                        <Link to="#" className="title text-capitalize">{item.createdBy}</Link>
-                                    </div>
-                                    <div className="col-mail col-mail-2" onClick={() => showMessage(item.ticketId)}>
-                                        <Link to="#" className="subject text-capitalize"> {item.badge ? <span className={"badge me-2 bg-" + item.badgeClass}>{item.badge}</span> : null} {item.subject} - <span className="teaser text-capitalize">{item.body}...</span>
-                                        </Link>
-                                        <div className="date">{new Date(item.createdAt).toLocaleDateString()}</div>
-                                    </div>
-                                </li>
-                            ))}
+                            {messages.map((item, key) => {
+                                if (item.isAdmin === false) {
+                                    return (
+                                        <li className={item.unread ? "unread" : null} key={key}>
+                                            <div className="col-mail col-mail-1">
+                                                {/* <div className="form-check checkbox-wrapper-mail fs-14">
+                                                    <input className="form-check-input" type="checkbox" value="" id={item.forId} />
+                                                    <label className="form-check-label" htmlFor={item.forId}></label>
+                                                </div> */}
+                                                <button type="button" className="btn avatar-xs p-0 favourite-btn fs-15 active">
+                                                    <Rating
+                                                        stop={1}
+                                                        emptySymbol="ri-star-fill text-muted"
+                                                        fullSymbol="ri-star-fill text-warning "
+                                                    />
+                                                </button>
+                                                <Link to="#" className="title text-capitalize">{item.createdBy}</Link>
+                                            </div>
+                                            <div className="col-mail col-mail-2" onClick={() => showMessage(item.ticketId)}>
+                                                <Link to="#" className="subject text-capitalize"> {item.badge ? <span className={"badge me-2 bg-" + item.badgeClass}>{item.badge}</span> : null} {item.subject} - <span className="teaser text-capitalize">{item.body}...</span>
+                                                </Link>
+                                                <div className="date">{new Date(item.createdAt).toLocaleDateString()}</div>
+                                            </div>
+                                        </li>
+
+                                    )
+                                }
+
+                            })}
                         </ul>
                     </SimpleBar>
                 </div>
@@ -131,8 +172,20 @@ const EmailToolbar = ({ messages, userId }) => {
                             </Row>
                         </div>
                         <SimpleBar className="mx-n4 px-4 email-detail-content-scroll" style={{ height: "100vh" }}>
-                            <div className="mt-4 mb-3">
+                            <div className="mt-4 mb-3 d-flex justify-content-between">
                                 <h5 className="fw-bold text-capitalize">New updates for {username}</h5>
+                                <h5 className="fw-bold text-capitalize">Practice :
+                                    {message[0]?.practiceId !== null ? 'Facility' :
+                                        message[0]?.indexingId !== null ? 'Indexing' : message[0]?.opticianId !== null ? 'Optician' : message[0]?.trainingId !== null ? 'Training' :
+                                            message[0]?.internshipId !== null ? 'Internship' : message[0]?.optometristId !== null ? 'Optometrist' : '--'
+                                    }</h5>
+                                <h5 className="fw-bold text-capitalize">Id :
+                                    {message[0]?.practiceId !== null ? message[0]?.practiceId : message[0]?.indexingId !== null ? message[0]?.indexingId :
+                                        message[0]?.opticianId !== null ? message[0]?.opticianId : message[0]?.trainingId !== null ?
+                                            message[0]?.trainingId : message[0]?.internshipId !== null ? message[0]?.internshipId :
+                                                message[0]?.optometristId !== null ? message[0]?.optometristId : '--'
+                                    }</h5>
+
                             </div>
                             {message?.map((e, i) => {
                                 return (
@@ -147,14 +200,14 @@ const EmailToolbar = ({ messages, userId }) => {
                                                             </div>
                                                             <div className="flex-grow-1 overflow-hidden">
                                                                 <h5 className="fs-14 text-truncate mb-0 text-capitalize">{e?.createdBy}</h5>
-                                                                <div className="text-truncate fs-12">to: {e.userId === userId ? 'admin' : 'me'}</div>
+                                                                <div className="text-truncate fs-12">to: {e.userId === userId ? message[0]?.createdBy : 'me'}</div>
                                                             </div>
                                                             <div className="flex-shrink-0 align-self-start">
                                                                 <div className="text-muted fs-12">{new Date(e?.createdAt).toLocaleDateString()}</div>
                                                             </div>
                                                         </div>
                                                     </a>
-                                                </div>  
+                                                </div>
 
                                                 <UncontrolledCollapse toggler={`email-collapse${i}`} className="accordion-collapse collapse">
                                                     <div className="accordion-body text-body px-0">
@@ -173,8 +226,8 @@ const EmailToolbar = ({ messages, userId }) => {
                         </SimpleBar>
                     </OffcanvasBody>
                     <div className="mt-auto p-4">
-                        {show ? <UncontrolledAlert color='success'>
-                            Message Sent
+                        {show ? <UncontrolledAlert color='danger'>
+                            Failed to send message please try again later!
                         </UncontrolledAlert> : ''}
                         <form className="mt-2">
                             <div>
@@ -192,6 +245,14 @@ const EmailToolbar = ({ messages, userId }) => {
                                 </div>
                             </div>
                         </form>
+                        <Row className='justify-content-between'>
+                            <Col className="col-auto mt-2" onClick={enableEdit}>
+                                <Button color="success" type='button' className="btn-sm">Enable</Button>
+                            </Col>
+                            <Col className="col-auto mt-2" onClick={closeTicket}>
+                                <Button color="primary" type='button' className="btn-sm">Close</Button>
+                            </Col>
+                        </Row>
                     </div>
                 </Offcanvas>
             </div>

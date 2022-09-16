@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom';
 import { request } from '../../../../services/utilities';
 import ReactPaginate from "react-paginate";
 import Repeater from './repeater/RepeatingForm'
-
+import { LoaderGrow } from '../../../AdvanceUi/Loader/loader';
 const BoardNumber = () => {
 
     const [modal, setModal] = useState(false);
     const [number, setNumber] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(false);
     const [meta, setMeta] = useState(null);
     const [count, setCount] = useState(1);
     const [board, setBoard] = useState([]);
@@ -29,16 +30,16 @@ const BoardNumber = () => {
         setCurrentPage(page.selected + 1)
     }
     const createBoardNumber = async () => {
+        setLoading(true);
         const data = boardArr;
-        // console.log(data)
         try {
             const url = `boards/create`;
             const rs = await request(url, 'POST', true, data);
-            console.log(rs);
             setModal(false);
             fetchBoardNumber();
-
+            setLoading(false);
         } catch (err) {
+            setLoading(false);
             console.log(err);
         }
     };
@@ -47,7 +48,6 @@ const BoardNumber = () => {
             try {
                 const url = `boards/delete/${id}`;
                 const rs = await request(url, 'DELETE', true);
-                console.log(rs);
                 fetchBoardNumber();
             } catch (err) {
                 console.log(err);
@@ -74,6 +74,7 @@ const BoardNumber = () => {
     }, fetchBoardNumber)
     return (
         <div>
+            <>{loading === true ? <LoaderGrow /> : ''}</>
             <Modal id="composemodal" className="modal-lg" isOpen={modal} toggle={toggle} centered>
                 <ModalHeader className="p-3 bg-light" toggle={toggle}>
                     Add Board Number

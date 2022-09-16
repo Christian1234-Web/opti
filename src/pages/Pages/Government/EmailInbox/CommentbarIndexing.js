@@ -61,7 +61,7 @@ const CommentToolbar = ({ messages, userId }) => {
                     <SimpleBar className="message-list-content mx-n4 px-4 message-list-scroll">
                         <ul className="message-list">
 
-                            <li className='unread'>
+                            <li className=''>
                                 <div className="col-mail col-mail-1">
                                     {/* <div className="form-check checkbox-wrapper-mail fs-14">
                                                     <input className="form-check-input" type="checkbox" value="" id={item.forId} />
