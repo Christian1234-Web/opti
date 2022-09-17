@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Container } from 'reactstrap';
-import MetaTags from 'react-meta-tags';
-import EmailSidebar from './EmailSidebar';
 import EmailToolbar from './EmailToolbar';
 import CommentbarOptician from './CommentbarOptician';
 import CommentbarOptometrist from './CommentbarOptometrist';

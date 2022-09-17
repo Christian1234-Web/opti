@@ -129,7 +129,7 @@ function Optometrist() {
 
         }
     }, [rowsPerPage]);
-   
+
     const fetchByCategory = async (page, type) => {
         const user = await (new SSRStorage()).getItem(USER_COOKIE);
         setTab_one('');
@@ -196,7 +196,7 @@ function Optometrist() {
             return (
                 <tr key={i}>
                     <th scope="row"><Link to="#" className="fw-medium">{e.id}</Link></th>
-                    <td>{e.user.firstName} {e.user.surname}</td>
+                    {e.user !== null ? <td>{e.user.firstName} {e.user.surname}</td> : <td>{e.i_name}</td>}
                     <td>{new Date(e.createdAt).toDateString()}</td>
                     <td>$2,300</td>
                     <td>
@@ -240,7 +240,7 @@ function Optometrist() {
             return (
                 <tr key={i}>
                     <th scope="row"><Link to="#" className="fw-medium">{e.id}</Link></th>
-                    <td>{e.createdBy}</td>
+                    <td>{e.createdBy || e.i_name}</td>
                     <td>{new Date(e.createdAt).toDateString()}</td>
                     <td>$2,300</td>
                     <td>{e.status !== "Approved" ?
@@ -261,8 +261,8 @@ function Optometrist() {
                                 <i onClick={() => handleUpdateIndexing(e.indexing, e.indexing.id)}
                                     className="ri-download-2-line fs-17 lh-1 align-middle"></i>
                             </button> */}
-                            <Link to={`/admin-dashboard-if/${`optometrist`}/${e.id}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
-
+                            <Link to={`/admin-dashboard-op/${`optometrist`}/${e.id}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
+                            {/* if */}
                         </div>
                         <UncontrolledTooltip placement="top" target="Tooltip1"> Comment & Approve</UncontrolledTooltip>
                         {/* <UncontrolledTooltip placement="top" target="Tooltip2">Approve  </UncontrolledTooltip> */}
@@ -361,7 +361,7 @@ function Optometrist() {
                                                 <tr>
                                                     <th scope="col"> ID</th>
                                                     <th scope="col">Customer</th>
-                                                    <th scope="col">Date</th> 
+                                                    <th scope="col">Date</th>
                                                     <th scope="col">Invoice</th>
                                                     <th scope="col">User Status</th>
                                                     <th scope="col">S.D Approval</th>

@@ -102,7 +102,6 @@ const OpticianOptometristViewPage = () => {
             const rs = await request(url, 'GET', true);
             setIdDetails(rs.data);
             setLoading(false);
-
         }
         catch (err) {
             setLoading(false);
@@ -171,7 +170,7 @@ const OpticianOptometristViewPage = () => {
                                                 Address
                                             </h6>
                                             {idDetails !== null ? <p className="text-muted mb-1">
-                                                {idDetails?.user?.address}, {idDetails?.user?.nationality}
+                                                {idDetails?.user?.address || idDetails?.i_address}, {idDetails?.user?.nationality}
                                             </p> :
                                                 <p className="text-muted mb-1">
                                                     --
@@ -184,7 +183,7 @@ const OpticianOptometristViewPage = () => {
                                             <span className="text-muted text-uppercase fw-normal">
                                                 <> {type.type} register user :</>
                                             </span>{" "}
-                                            {idDetails !== null ? <>{idDetails?.user?.firstName} {idDetails?.user?.surname}</> :
+                                            {idDetails !== null ? <>{idDetails?.user?.firstName || idDetails?.i_name} {idDetails?.user?.surname}</> :
                                                 '--'
                                             }
 
@@ -210,14 +209,14 @@ const OpticianOptometristViewPage = () => {
                                         </h6>
                                         <h6>
                                             <span className="text-muted fw-normal text-uppercase">Email :</span>{" "}
-                                            {idDetails !== null ? <>{idDetails?.email}</> :
+                                            {idDetails !== null ? <>{idDetails?.email || idDetails?.i_email}</> :
                                                 '--'
                                             }
                                         </h6>
 
                                         <h6 className="mb-0">
                                             <span className="text-muted fw-normal text-uppercase">Contact No :</span>{" "}
-                                            {idDetails !== null ? <>{idDetails?.phone} </> :
+                                            {idDetails !== null ? <>{idDetails?.phone || idDetails?.i_phone} </> :
                                                 '--'
                                             }
 
@@ -311,43 +310,45 @@ const OpticianOptometristViewPage = () => {
                                 <Row className="g-3">
                                     <Col sm={4}>
                                         <h6 className="text-muted text-uppercase fw-semibold mb-3">
-                                            User Informations
+                                            User Information
                                         </h6>
                                         <div className="d-flex">
-                                            <p className="fw-medium mb-2">First Name:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user.firstName}</> : "--"}</p>
+                                            <p className="fw-medium mb-2" onClick={() => {
+                                                console.log(idDetails?.i_name.split(' ')[0])
+                                            }}>First Name:</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.firstName || idDetails?.i_name.split(' ')[0]}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Other Name:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user.otherNames}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.otherNames}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Surname:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user.surname}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.surname || idDetails?.i_name.split(' ')[1]}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Email:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user.email}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.email || idDetails?._email}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Phone:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user.phone}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.phone || idDetails?._phone}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Gender:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user.sex}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.sex}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Date of Birth:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{new Date(idDetails.user.dateOfBirth).toDateString()}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{new Date(idDetails.user?.dateOfBirth || idDetails?.i_dob).toDateString()}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">State of Origin:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user.stateOfOrigin}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.stateOfOrigin || idDetails?.i_state}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Local Government:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user.lgaOrigin}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.lgaOrigin}</> : "--"}</p>
                                         </div>
                                     </Col>
                                     <Col sm={4}>
@@ -356,11 +357,11 @@ const OpticianOptometristViewPage = () => {
                                         </h6>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Home Address:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.address}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.address || idDetails.i_address}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Office/ Practice Address:</p>
-                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.officeAddress}</> : "--"}</p>
+                                            <p className="text-muted mb-1 mx-2">{idDetails !== null ? <>{idDetails.user?.officeAddress || idDetails.i_address}</> : "--"}</p>
                                         </div>
                                         <div className="d-flex">
                                             <p className="fw-medium mb-2">Marital Status:</p>

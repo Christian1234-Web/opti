@@ -49,7 +49,7 @@ function Optometrist() {
     const fetchOptometrists = useCallback(async (page) => {
 
         const p = page || 1;
-        const url = `optometrists?limit=5&page=${p}`;
+        const url = `optometrists?limit=10&page=${p}`;
 
         try {
             setLoading(true);
@@ -57,7 +57,7 @@ function Optometrist() {
             isRenderSearch.current.style.display = 'none';
             isRenderRef.current.style.display = '';
             setOptometrists(rs.data);
-            setArrayLength(rs.data.length);
+            setArrayLength(rs.paging.total);
             setMeta(rs.paging);
             setCount(Math.ceil(rs.paging.total / rowsPerPage));
             setLoading(false);
@@ -73,12 +73,10 @@ function Optometrist() {
     }, [rowsPerPage]);
 
     const searchOptometrist = async (e) => {
-        // console.log(e, 'kkkk')
         const data = { payload: e }
         try {
             const url = `search/optometrists`;
             const rs = await request(url, 'POST', true, data);
-            // console.log(rs);
             setSearchArray(rs.data.optometrist);
             setArrayLength(rs.data.optometrist.length);
             isRenderRef.current.style.display = 'none';
@@ -99,12 +97,12 @@ function Optometrist() {
         }
     }
 
-    const renderOptometrist = optometrists.map((e, i) => {
+    const renderOptometrist = optometrists?.map((e, i) => {
         if (optometrists.length > 0) {
             return (
                 <tr key={i}>
                     <th scope="row"><Link to="#" className="fw-medium">{e.id}</Link></th>
-                    <td>{e.user.firstName} {e.user.surname}</td>
+                    {e.user !== null ? <td>{e.user.firstName} {e.user.surname}</td> : <td>{e.i_name}</td>}
                     <td>{new Date(e.createdAt).toDateString()}</td>
                     <td>$2,300</td>
                     <td>
@@ -112,11 +110,10 @@ function Optometrist() {
                             <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                         }
                     </td>
-                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === null ? 'Awaiting Approval' : e.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
-                        <div className={e.user.id === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
-                            <Link to={`/search-dashboard/view/${`optometrist`}/${e.user.id}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
-
+                        <div className={e.userId === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
+                            <Link to={`/search-dashboard/view/${`optometrist`}/${e.user?.id}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
                         </div>
                         <UncontrolledTooltip placement="top" target="Tooltip3">View Details  </UncontrolledTooltip>
 
@@ -130,12 +127,12 @@ function Optometrist() {
         }
     });
 
-    const renderBySearch = searchArray.map((e, i) => {
+    const renderBySearch = searchArray?.map((e, i) => {
         if (searchArray.length > 0) {
             return (
                 <tr key={i}>
                     <th scope="row"><Link to="#" className="fw-medium">{e.id}</Link></th>
-                    <td>{e.createdBy}</td>
+                    <td>{e.i_name}</td>
                     <td>{new Date(e.createdAt).toDateString()}</td>
                     <td>$2,300</td>
                     <td>{e.status !== "Approved" ?
@@ -143,16 +140,14 @@ function Optometrist() {
                         <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                     }
                     </td>
-                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === null ? 'Awaiting Approval' : e.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
                         <div className={e.userId === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
                             <Link to={`/search-dashboard/view/${`optometrist`}/${e.userId}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
-
                         </div>
                         <UncontrolledTooltip placement="top" target="Tooltip3">View Details  </UncontrolledTooltip>
-
-                    </td >
-                </tr >
+                    </td>
+                </tr>
             )
         } else {
             return (

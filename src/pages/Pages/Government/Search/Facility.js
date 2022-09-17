@@ -49,15 +49,13 @@ function Facility() {
         try {
             setLoading(true);
             const rs = await request(url, 'GET', true);
-            console.log(rs);
             isRenderSearch.current.style.display = 'none';
             isRenderRef.current.style.display = '';
             setPractices(rs.data);
-            setArrayLength(rs.data.length)
+            setArrayLength(rs.paging.total)
             setMeta(rs.paging);
             setCount(Math.ceil(rs.paging.total / rowsPerPage));
             setLoading(false);
-            // console.log(rs.data);
         } catch (err) {
             setLoading(false);
             if (err.message === 'No record') {
@@ -71,12 +69,10 @@ function Facility() {
     }, [rowsPerPage]);
 
     const searchPractice = async (e) => {
-        // console.log(e, 'kkkk')
         const data = { payload: e }
         try {
             const url = `search/practices`;
             const rs = await request(url, 'POST', true, data);
-            // console.log(rs);
             setSearchArray(rs.data.practice);
             setArrayLength(rs.data.practice.length)
             isRenderRef.current.style.display = 'none';
@@ -115,7 +111,7 @@ function Facility() {
                         <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                     }
                     </td>
-                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === null ? 'Awaiting Approval' : e.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
                         <div className={e.userId === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
                             <Link to={`/search-dashboard/view/${`practice`}/${e.userId}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
@@ -148,7 +144,7 @@ function Facility() {
                     }
                     </td>
 
-                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === null ? 'Awaiting Approval' : e.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
                         <div className={e.userId === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
                             <Link to={`/search-dashboard/view/${`practice`}/${e.userId}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>

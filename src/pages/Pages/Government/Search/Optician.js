@@ -50,15 +50,14 @@ function Optician() {
 
     const fetchOpticians = useCallback(async (page) => {
         const p = page || 1;
-        const url = `opticians?limit=5&page=${p}`;
+        const url = `opticians?limit=10&page=${p}`;
         try {
             setLoading(true);
             const rs = await request(url, 'GET', true);
-            console.log(rs);
             isRenderSearch.current.style.display = 'none';
             isRenderRef.current.style.display = '';
             setOpticians(rs.data);
-            setArrayLength(rs.data.length)
+            setArrayLength(rs.paging.total)
             setMeta(rs.paging);
             setCount(Math.ceil(rs.paging.total / rowsPerPage));
             setLoading(false);
@@ -74,14 +73,12 @@ function Optician() {
     }, [rowsPerPage])
 
     const searchOptician = async (e) => {
-        // console.log(e, 'kkkk')
         const data = { payload: e }
         try {
             const url = `search/opticians`;
             const rs = await request(url, 'POST', true, data);
-            console.log(rs);
             setSearchArray(rs.data.optician);
-            setArrayLength(rs.data.optician.length)
+            setArrayLength(rs.data.optician.length);
             isRenderRef.current.style.display = 'none';
             isRenderSearch.current.style.display = '';
         } catch (err) {
@@ -108,18 +105,18 @@ function Optician() {
         if (opticians.length > 0) {
             return (
                 <tr key={i}>
-                    <th scope="row"><Link to="#" className="fw-medium">{e.user.id}</Link></th>
-                    <td>{e.user.firstName} {e.user.surname}</td>
+                    <th scope="row"><Link to="#" className="fw-medium">{e.id || '--'}</Link></th>
+                    {e.user !== null ? <td>{e.user?.firstName} {e.user.surname}</td> : <td>{e.i_name} </td>}
                     <td>{new Date(e.createdAt).toDateString()}</td>
                     <td>$2,300</td>
                     <td>{e.status !== "Approved" ? <span className="ri-close-circle-line align-middle text-danger"><span className='text-dark mx-1'>{e.status}</span></span> :
                         <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                     }
                     </td>
-                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === null ? 'Awaiting Approval' : e.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
-                        <div className={e.user.id === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
-                            <Link to={`/search-dashboard/view/${`optician`}/${e.user.id}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
+                        <div className={e.userId === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
+                            <Link to={`/search-dashboard/view/${`optician`}/${e.user?.id}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
 
                         </div>
                         <UncontrolledTooltip placement="top" target="Tooltip3">View Details  </UncontrolledTooltip>
@@ -138,7 +135,7 @@ function Optician() {
             return (
                 <tr key={i}>
                     <th scope="row"><Link to="#" className="fw-medium">{e.id}</Link></th>
-                    <td>{e.createdBy || 'George'}</td>
+                    <td>{e.createdBy || e.i_name}</td>
                     <td>{new Date(e.createdAt).toDateString()}</td>
                     <td>$2,300</td>
                     <td>{e.status !== "Approved" ?
@@ -146,7 +143,7 @@ function Optician() {
                         <span className="ri-checkbox-circle-line align-middle text-success"><span className='mx-1'>{e.status}</span></span>
                     }
                     </td>
-                    <td>{e.isApprovedByAdmin === false ? 'Awaiting Approval' : 'Approved'}</td>
+                    <td>{e.isApprovedByAdmin === null ? 'Awaiting Approval' : e.isApprovedByAdmin === false ? 'Disapproved' : 'Approved'}</td>
                     <td>
                         <div className={e.userId === null ? 'hstack flex-wrap d-none' : 'hstack flex-wrap'}>
                             <Link to={`/search-dashboard/view/${`optician`}/${e.userId}`} className="link-success btn-icon btn-sm" id="Tooltip3"><i className="ri-compass-3-line fs-16"></i></Link>
@@ -174,20 +171,20 @@ function Optician() {
                     <div className="col-xl-12">
                         <div className="card">
                             <Row className='align-items-center'>
-                                    <Col>
-                                        <h4 className="card-title mb-0 ">Registered Opticians </h4>
-                                    </Col>
-                                    <Col lg={10}>
-                                        <div className="form-group m-0 mx-3" style={{ width: '98%' }}>
-                                            <div className="input-group">
-                                                <input type="text" className="form-control" onChange={e => searchOptician(e.target.value)}
-                                                    placeholder="Search by  user name..."
-                                                    aria-label="Recipient's username" />
-                                                <button className="btn btn-primary" type="button"><i
-                                                    className="mdi mdi-magnify"></i></button>
-                                            </div>
+                                <Col>
+                                    <h4 className="card-title mb-0 ">Registered Opticians </h4>
+                                </Col>
+                                <Col lg={10}>
+                                    <div className="form-group m-0 mx-3" style={{ width: '98%' }}>
+                                        <div className="input-group">
+                                            <input type="text" className="form-control" onChange={e => searchOptician(e.target.value)}
+                                                placeholder="Search by  user name..."
+                                                aria-label="Recipient's username" />
+                                            <button className="btn btn-primary" type="button"><i
+                                                className="mdi mdi-magnify"></i></button>
                                         </div>
-                                    </Col>
+                                    </div>
+                                </Col>
                             </Row>
 
                             <div className="card-body pt-4 table-responsive">

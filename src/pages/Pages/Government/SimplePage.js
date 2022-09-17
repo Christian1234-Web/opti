@@ -156,10 +156,11 @@ const SimplePage = () => {
         intenshipRef.current.style.display = 'none';
         facilityRef.current.style.display = 'block';
     }
-    const downLoadFIle = (e) => {
+    const downLoadFIle = (e, x) => {
+        // data:file/csv;base64,Uy9OLE5VTUJFUlMK
         const linkSource = e;
         const downloadLink = document.createElement('a');
-        const fileName = 'test';
+        const fileName = x;
         downloadLink.href = linkSource;
         downloadLink.setAttribute('target', '_blank')
         downloadLink.setAttribute('ref', 'noreferrer noopene')
@@ -489,9 +490,9 @@ const SimplePage = () => {
                                                                                         <i className="ri-equalizer-fill"></i>
                                                                                     </DropdownToggle>
                                                                                     <DropdownMenu>
-                                                                                        <DropdownItem onClick={() => downLoadFIle(item.file)}><i className="ri-eye-fill me-2 align-middle text-muted" />View</DropdownItem>
+                                                                                        <DropdownItem onClick={() => downLoadFIle(item.file, item.name)}><i className="ri-eye-fill me-2 align-middle text-muted" />View</DropdownItem>
                                                                                         <DropdownItem divider />
-                                                                                        <DropdownItem onClick={() => downLoadFIle(item.file)}><i className="ri-download-2-fill me-2 align-middle text-muted" />Download</DropdownItem>
+                                                                                        <DropdownItem onClick={() => downLoadFIle(item.file, item.name)}><i className="ri-download-2-fill me-2 align-middle text-muted" />Download</DropdownItem>
                                                                                     </DropdownMenu>
                                                                                 </UncontrolledDropdown>
                                                                             </td>

@@ -2,13 +2,14 @@
 import { useState } from 'react'
 
 // ** Icons Imports
-import { X, Plus } from 'react-feather'
+import { X, Plus, Download } from 'react-feather'
 
 // ** Custom Components
 import Repeater from './index'
 
 // ** Reactstrap Imports
-import { Row, Col, Card, CardHeader, CardBody, Form, Label, Input, Button } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, Form, Label, Input, Button, UncontrolledDropdown, DropdownMenu, DropdownItem, DropdownToggle } from 'reactstrap'
+import { request } from '../../../../../services/utilities'
 
 const RepeatingForm = ({ boardArr }) => {
   // ** State
@@ -25,7 +26,7 @@ const RepeatingForm = ({ boardArr }) => {
       setCount(count + 1);
     }
   }
-
+ 
   const deleteForm = e => {
     e.target.closest('form').remove()
     // let x = e.target.closest('form')
@@ -35,10 +36,6 @@ const RepeatingForm = ({ boardArr }) => {
 
   return (
     <Card>
-      <CardHeader>
-        <h4 className='card-title'>Repeating Forms</h4>
-      </CardHeader>
-
       <CardBody>
         <Repeater count={count}>
           {i => (
@@ -76,12 +73,13 @@ const RepeatingForm = ({ boardArr }) => {
             </Form>
           )}
         </Repeater>
-        <Col xl={8}>
-          <Button color='primary' onClick={increaseCount}>
-            <Plus size={14} />
-            <span className='align-middle ms-25'>Add New</span>
-          </Button>
-        </Col>
+        <Row className='justify-content-between'>
+          <Col xl={4}>
+            <Button color='primary' onClick={increaseCount}>
+              <Plus size={14} />
+            </Button>
+          </Col>
+        </Row>
       </CardBody>
     </Card>
   )

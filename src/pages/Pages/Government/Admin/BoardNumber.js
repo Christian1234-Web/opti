@@ -5,6 +5,11 @@ import { request } from '../../../../services/utilities';
 import ReactPaginate from "react-paginate";
 import Repeater from './repeater/RepeatingForm'
 import { LoaderGrow } from '../../../AdvanceUi/Loader/loader';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+const MySwal = withReactContent(Swal);
+
+
 const BoardNumber = () => {
 
     const [modal, setModal] = useState(false);
@@ -54,7 +59,56 @@ const BoardNumber = () => {
             }
         }
     }
+    const downloadCsv = async () => {
+        try {
+            const url = `boards/template/get?type=`;
+            const rs = await request(url, 'GET', true);
+            if (rs.success === true) {
+                const linkSource = rs.result;
+                const downloadLink = document.createElement('a');
+                const fileName = 'boardNumbers.csv';
+                downloadLink.href = linkSource;
+                downloadLink.setAttribute('target', '_blank');
+                downloadLink.setAttribute('ref', 'noreferrer noopene');
+                downloadLink.download = fileName;
+                downloadLink.click();
+                return MySwal.fire({
+                    text: ' File Downloaded Successfully!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    const onChange = e => {
+        const reader = new FileReader(),
+            files = e.target.files;
+        reader.onload = async function () {
+            const data = { data: reader.result };
+            try {
+                const url = `boards/file/save`;
+                const rs = await request(url, 'POST', true, data);
+                if (rs.success === true) {
+                    fetchBoardNumber();
+                    setModal(false);
+                    return MySwal.fire({
+                        text: ' File Uploaded Successfully!',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            } catch (err) {
+                console.log(err);
+                alert('Failed to upload file');
+            }
+        }
+        reader.readAsDataURL(files[0]);
 
+    }
     const fetchBoardNumber = useCallback(async (page) => {
         const p = page || 1;
 
@@ -79,31 +133,40 @@ const BoardNumber = () => {
                 <ModalHeader className="p-3 bg-light" toggle={toggle}>
                     Add Board Number
                 </ModalHeader>
+
                 <ModalBody>
+
                     <Col md={12} >
                         <Repeater boardArr={boardArr} />
                     </Col>
                 </ModalBody>
-                <div className="modal-footer">
-                    <button
-                        type="button"
-                        className="btn btn-ghost-danger"
-                        onClick={() => {
-                            setModal(false);
-                        }}
-                    >
-                        Cancel
-                    </button>
 
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => {
-                            createBoardNumber();
-                        }}
-                    >
-                        Add
-                    </button>
+                <div className='d-flex  justify-content-between p-2'>
+                    <div >
+                        <button onClick={downloadCsv} className='btn btn-primary mx-2'>Download CSV</button>
+                        <input onChange={onChange} type='file' accept='.csv' className='btn w-50 btn-light' />
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            className="btn btn-ghost-danger"
+                            onClick={() => {
+                                setModal(false);
+                            }}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => {
+                                createBoardNumber();
+                            }}
+                        >
+                            Add
+                        </button>
+                    </div>
 
                 </div>
             </Modal>
